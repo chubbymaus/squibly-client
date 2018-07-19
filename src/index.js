@@ -1,13 +1,14 @@
-import React from "react";
-import { render } from "react-dom";
-import { ApolloProvider } from "react-apollo";
-import ApolloClient from "apollo-boost";
+import React from 'react';
+import { render } from 'react-dom';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-boost';
+import 'semantic-ui-css/semantic.min.css';
 
-import Routes from "./routes/index";
-import registerServiceWorker from "./registerServiceWorker";
+import Routes from './routes/index';
+import registerServiceWorker from './registerServiceWorker';
 
 const client = new ApolloClient({
-  uri: "http://localhost:8080/graphql"
+  uri: 'http://localhost:8080/graphql',
 });
 
 const App = () => (
@@ -16,5 +17,5 @@ const App = () => (
   </ApolloProvider>
 );
 
-render(<App />, document.getElementById("root"));
+render(<App />, document.getElementById('root'));
 registerServiceWorker();
