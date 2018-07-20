@@ -279,6 +279,12 @@ apollo-client@^2.3.5:
   optionalDependencies:
     "@types/async" "2.0.49"
 
+apollo-link-context@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/apollo-link-context/-/apollo-link-context-1.0.8.tgz#c967a56ac6ed32add748937735bcb57c5cc64c95"
+  dependencies:
+    apollo-link "^1.2.2"
+
 apollo-link-dedup@^1.0.0:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/apollo-link-dedup/-/apollo-link-dedup-1.0.9.tgz#3c4e4af88ef027cbddfdb857c043fd0574051dad"
@@ -310,6 +316,12 @@ apollo-link-state@^0.4.0:
   dependencies:
     apollo-utilities "^1.0.8"
     graphql-anywhere "^4.1.0-alpha.0"
+
+apollo-link-ws@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/apollo-link-ws/-/apollo-link-ws-1.0.8.tgz#ac1de8f29e92418728479a9a523af9f75b9ccc8b"
+  dependencies:
+    apollo-link "^1.2.2"
 
 apollo-link@^1.0.0, apollo-link@^1.0.6, apollo-link@^1.2.2:
   version "1.2.2"
