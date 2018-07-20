@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import { Message, Container, Header, Input, Button } from "semantic-ui-react";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 
-class Register extends React.Component {
+class Register extends Component {
   state = {
     username: "",
     usernameError: "",

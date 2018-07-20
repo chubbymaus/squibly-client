@@ -6,13 +6,19 @@
     "apollo-boost": "^0.1.10",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
+    "mobx": "^5.0.3",
+    "mobx-persist": "^0.4.1",
+    "mobx-react": "^5.2.3",
+    "mobx-react-form": "^1.34.0",
     "react": "^16.4.1",
     "react-apollo": "^2.1.9",
     "react-dom": "^16.4.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "semantic-ui-css": "^2.3.3",
-    "semantic-ui-react": "^0.82.0"
+    "semantic-ui-react": "^0.82.0",
+    "valid-url": "^1.0.9",
+    "validatorjs": "^3.14.2"
   },
   "scripts": {
     "start": "react-scripts start",
