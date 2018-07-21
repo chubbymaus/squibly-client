@@ -46,25 +46,23 @@ const user = ({ id, name }) => (
     </SideBarListItem>
 );
 
-export default ({
-    teamName, username, channels, users,
-}) => (
-        <ChannelWrapper>
-            <PushLeft>
-                <TeamNameHeader>{teamName}</TeamNameHeader>
-                {username}
-            </PushLeft>
-            <div>
-                <SideBarList>
-                    <SideBarListHeader>Channels</SideBarListHeader>
-                    {channels.map(channel)}
-                </SideBarList>
-            </div>
-            <div>
-                <SideBarList>
-                    <SideBarListHeader>Direct Messages</SideBarListHeader>
-                    {users.map(user)}
-                </SideBarList>
-            </div>
-        </ChannelWrapper>
-    );
+export default ({ teamName, username, channels, users, }) => (
+    <ChannelWrapper>
+        <PushLeft>
+            <TeamNameHeader>{teamName}</TeamNameHeader>
+            {username}
+        </PushLeft>
+        <div>
+            <SideBarList>
+                <SideBarListHeader>Channels</SideBarListHeader>
+                {channels.map(channel)}
+            </SideBarList>
+        </div>
+        <div>
+            <SideBarList>
+                <SideBarListHeader>Direct Messages</SideBarListHeader>
+                {users.map(user)}
+            </SideBarList>
+        </div>
+    </ChannelWrapper>
+);
