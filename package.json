@@ -12,6 +12,7 @@
     "apollo-utilities": "^1.0.16",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
+    "jwt-decode": "^2.2.0",
     "mobx": "^5.0.3",
     "mobx-persist": "^0.4.1",
     "mobx-react": "^5.2.3",
