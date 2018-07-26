@@ -27,6 +27,7 @@ const paddingLeft = 'padding-left: 10px';
 const SideBarListItem = styled.li`
   padding: 2px;
   ${paddingLeft};
+  color: #fff;
   &:hover {
     background: #48acf0;
   }
@@ -38,6 +39,10 @@ const PushLeft = styled.div`${paddingLeft};`;
 
 const Green = styled.span`color: #31C56E;`;
 
+const AddUserIcon = styled.span`
+    color: #31C56E;
+
+`;
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
 const channel = ({ id, name }, teamId) => (
@@ -56,11 +61,12 @@ const user = ({ id, name }) => (
 
 );
 
-export default ({ teamName, username, channels, users, onAddChannelClick, teamId, }) => (
+export default ({ teamName, username, channels, users, onAddChannelClick, teamId, onInvitePeopleClick }) => (
     <ChannelWrapper>
         <PushLeft>
             <TeamNameHeader>{teamName}</TeamNameHeader>
             {username}
+
         </PushLeft>
         <div>
             <SideBarList>
@@ -74,5 +80,14 @@ export default ({ teamName, username, channels, users, onAddChannelClick, teamId
                 {users.map(user)}
             </SideBarList>
         </div>
+        <div>
+
+
+            <a href="#invite-people" onClick={onInvitePeopleClick}>
+                Invite users to team <AddUserIcon> <Icon name="user plus" /></AddUserIcon>
+            </a>
+
+        </div>
+
     </ChannelWrapper>
 );
