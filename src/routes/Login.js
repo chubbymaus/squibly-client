@@ -29,7 +29,7 @@ class Login extends Component {
     if (ok) {
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
-      this.props.history.push("/");
+      this.props.history.push("/view-team");
     } else {
       const err = {};
       errors.forEach(({ path, message }) => {
@@ -47,8 +47,8 @@ class Login extends Component {
   };
 
   render() {
-    const { email, password, errors: {emailError, passwordError} } = this;
-    
+    const { email, password, errors: { emailError, passwordError } } = this;
+
     const errorList = [];
 
     if (emailError) {
@@ -63,26 +63,26 @@ class Login extends Component {
       <Container text>
         <Header as="h2">Login</Header>
         <Form>
-        <Form.Field error={!!emailError}>
-        <Input
-          name="email"
-          onChange={this.onChange}
-          value={email}
-          placeholder="Email"
-          fluid
-        />
-        </Form.Field>
-        <Form.Field error={!!passwordError}>
-        <Input
-          name="password"
-          onChange={this.onChange}
-          value={password}
-          type="password"
-          placeholder="Password"
-          fluid
-        />
-        </Form.Field>
-        <Button onClick={this.onSubmit}>Submit</Button>
+          <Form.Field error={!!emailError}>
+            <Input
+              name="email"
+              onChange={this.onChange}
+              value={email}
+              placeholder="Email"
+              fluid
+            />
+          </Form.Field>
+          <Form.Field error={!!passwordError}>
+            <Input
+              name="password"
+              onChange={this.onChange}
+              value={password}
+              type="password"
+              placeholder="Password"
+              fluid
+            />
+          </Form.Field>
+          <Button onClick={this.onSubmit}>Submit</Button>
         </Form>
         {errorList.length ? (
           <Message

@@ -12,21 +12,22 @@ export default class Sidebar extends React.Component {
         openInvitePeopleModal: false
     };
 
-    handleCloseAddChannelModal = () => {
-        this.setState({ openAddChannelModal: false });
+    toggleAddChannelModal = (e) => {
+        if (e) {
+            e.preventDefault();
+        }
+        this.setState(state => ({ openAddChannelModal: !state.openAddChannelModal }));
     };
 
-    handleAddChannelClick = () => {
-        this.setState({ openAddChannelModal: true });
+
+    toggleInvitePeopleModal = (e) => {
+        if (e) {
+            e.preventDefault();
+        }
+        this.setState(state => ({ openInvitePeopleModal: !state.openInvitePeopleModal }));
     };
 
-    handleInvitePeopleClick = () => {
-        this.setState({ openInvitePeopleModal: true });
-    };
 
-    handleCloseInvitePeopleModal = () => {
-        this.setState({ openInvitePeopleModal: false });
-    };
 
     render() {
         const { teams, team } = this.props;
@@ -49,18 +50,18 @@ export default class Sidebar extends React.Component {
                 teamId={team.id}
                 channels={team.channels}
                 users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
-                onAddChannelClick={this.handleAddChannelClick}
-                onInvitePeopleClick={this.handleInvitePeopleClick}
+                onAddChannelClick={this.toggleAddChannelModal}
+                onInvitePeopleClick={this.toggleInvitePeopleModal}
             />,
             <AddChannelModal
                 teamId={team.id}
-                onClose={this.handleCloseAddChannelModal}
+                onClose={this.toggleAddChannelModal}
                 open={openAddChannelModal}
                 key="sidebar-add-channel-modal"
             />,
             <InvitePeopleModal
                 teamId={team.id}
-                onClose={this.handleCloseInvitePeopleModal}
+                onClose={this.toggleInvitePeopleModal}
                 open={openInvitePeopleModal}
                 key="invite-people-modal"
             />,
