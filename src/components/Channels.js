@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const ChannelWrapper = styled.div`
     grid-column: 2;
     grid-row: 1 / 4;
-    background-color: #f2f2f2;
+    background-color: #f3f3f3;
     color: #384455;
 
 `;
@@ -65,7 +65,15 @@ const user = ({ id, name }) => (
 export default ({ teamName, username, channels, users, onAddChannelClick, teamId, onInvitePeopleClick, isOwner }) => (
     <ChannelWrapper>
         <PushLeft>
-            <TeamNameHeader>{teamName}</TeamNameHeader>
+            <TeamNameHeader>
+                {teamName}
+                {isOwner && (<span>
+                    <a href="#invite-people" onClick={onInvitePeopleClick}>
+                        <AddUserIcon> <Icon name="user plus" /></AddUserIcon>
+                    </a>
+                </span>
+                )}
+            </TeamNameHeader>
             {username}
 
         </PushLeft>
@@ -82,11 +90,6 @@ export default ({ teamName, username, channels, users, onAddChannelClick, teamId
             </SideBarList>
         </div>
 
-        {isOwner && (<div>
-            <a href="#invite-people" onClick={onInvitePeopleClick}>
-                Invite users to team <AddUserIcon> <Icon name="user plus" /></AddUserIcon>
-            </a>
-        </div>
-        )}
+
     </ChannelWrapper>
 );
