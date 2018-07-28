@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const ChannelWrapper = styled.div`
     grid-column: 2;
     grid-row: 1 / 4;
-    background-color: #fcfcfc;
+    background-color: #f2f2f2;
     color: #384455;
 
 `;
