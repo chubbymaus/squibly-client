@@ -1,14 +1,13 @@
 import React from 'react';
-import styled from "styled-components";
+import styled from 'styled-components';
 import { Input } from 'semantic-ui-react';
 import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
 
 const SendMessageWrapper = styled.div`
-    grid-column: 3;
-    grid-row: 3;
-    margin: 20px;
+  grid-column: 3;
+  padding: 20px;
 `;
 
 const ENTER_KEY = 13;

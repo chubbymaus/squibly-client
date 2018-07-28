@@ -11,7 +11,7 @@ export const allTeamsQuery = gql`
         name
       }
     }
-    inviteTeams{
+    inviteTeams {
       id
       name
       owner
@@ -22,3 +22,5 @@ export const allTeamsQuery = gql`
     }
   }
 `;
+
+export const idk = {};
