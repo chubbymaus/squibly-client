@@ -6,13 +6,13 @@ import { Link } from "react-router-dom";
 const ChannelWrapper = styled.div`
     grid-column: 2;
     grid-row: 1 / 4;
-    background-color: #384455;
-    color: #fff;
+    background-color: #fcfcfc;
+    color: #384455;
 
 `;
 
 const TeamNameHeader = styled.h1`
-  color: #fff;
+  color: #2a3443;
   font-size: 20px;
 `;
 
@@ -27,9 +27,10 @@ const paddingLeft = 'padding-left: 10px';
 const SideBarListItem = styled.li`
   padding: 2px;
   ${paddingLeft};
-  color: #fff;
+  color: #384455;
   &:hover {
     background: #48acf0;
+    color: #fff;
   }
 `;
 

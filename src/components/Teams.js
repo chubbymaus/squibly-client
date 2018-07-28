@@ -22,8 +22,8 @@ const TeamList = styled.ul`
 const TeamListItem = styled.li`
   height: 50px;
   width: 50px;
-  background-color: #aaa;
-  color: #fff;
+  background-color: #fafafa;
+  color: #2a3443;
   margin: auto;
   margin-bottom: 10px;
   display: flex;
@@ -34,7 +34,7 @@ const TeamListItem = styled.li`
   &:hover {
     border-style: solid;
     border-width: thick;
-    border-color: #909090;
+    border-color: #48acf0;
   }
 `;
 
