@@ -27,31 +27,36 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, us
     const team = teamIdx === -1 ? teams[0] : teams[teamIdx];
 
     return (
-        <AppLayout>
-            <Sidebar
-                teams={teams.map(t => ({
-                    id: t.id,
-                    letter: t.name.charAt(0).toUpperCase(),
-                }))}
-                team={team}
-                username={username}
-            />
-            <Header channelName="Someone's username" />
-            <DirectMessageContainer teamId={teamId} userId={userId} />
-            <SendMessage
-                onSubmit={async (text) => {
-                    const response = await mutate({
-                        variables: {
-                            text,
-                            receiverId: userId,
-                            teamId,
-                        },
-                    });
-                    console.log(response);
-                }}
-                placeholder={userId}
-            />
-        </AppLayout>
+        <div>
+            <h1>Navbar</h1>
+
+            <AppLayout>
+
+                <Sidebar
+                    teams={teams.map(t => ({
+                        id: t.id,
+                        letter: t.name.charAt(0).toUpperCase(),
+                    }))}
+                    team={team}
+                    username={username}
+                />
+                <Header channelName="Someone's username" />
+                <DirectMessageContainer teamId={teamId} userId={userId} />
+                <SendMessage
+                    onSubmit={async (text) => {
+                        const response = await mutate({
+                            variables: {
+                                text,
+                                receiverId: userId,
+                                teamId,
+                            },
+                        });
+                        console.log(response);
+                    }}
+                    placeholder={userId}
+                />
+            </AppLayout>
+        </div>
     );
 };
 
