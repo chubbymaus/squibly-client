@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const meQuery = gql `
+export const meQuery = gql`
   {
     me {
       id
@@ -9,6 +9,10 @@ export const meQuery = gql `
         id
         name
         admin
+        directMessageMembers {
+          id
+          username
+        }
         channels {
           id
           name
@@ -18,4 +22,4 @@ export const meQuery = gql `
   }
 `;
 
-export const idk = {};
+// export const idk = {};
