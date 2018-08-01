@@ -11,6 +11,7 @@ import DirectMessageContainer from '../containers/DirectMessageContainer';
 import { meQuery } from '../graphql/team';
 import gql from 'graphql-tag';
 
+import NavBar from '../components/NavBar';
 const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, userId } } }) => {
     if (loading) {
         return null;
@@ -27,6 +28,8 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, us
     const team = teamIdx === -1 ? teams[0] : teams[teamIdx];
 
     return (
+        <div>
+        <NavBar />
         <AppLayout>
             <Sidebar
                 teams={teams.map(t => ({
@@ -52,6 +55,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, us
                 placeholder={userId}
             />
         </AppLayout>
+        </div>
     );
 };
 

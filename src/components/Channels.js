@@ -8,6 +8,7 @@ const ChannelWrapper = styled.div`
     grid-row: 1 / 4;
     background-color: #f3f3f3;
     color: #384455;
+    padding-top: 15px;
 
 `;
 

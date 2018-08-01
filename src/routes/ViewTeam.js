@@ -10,7 +10,7 @@ import AppLayout from '../components/AppLayout';
 import Sidebar from '../containers/Sidebar';
 import MessageContainer from '../containers/MessageContainer';
 import { meQuery } from '../graphql/team';
-
+import NavBar from '../components/NavBar';
 const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
   if (loading) {
     return null;
@@ -31,6 +31,8 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
   const channel = channelIdx === -1 ? team.channels[0] : team.channels[channelIdx];
 
   return (
+    <div>
+    <NavBar />
     <AppLayout>
       <Sidebar
         teams={teams.map(t => ({
@@ -51,6 +53,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
         />
       )}
     </AppLayout>
+    </div>
   );
 };
 

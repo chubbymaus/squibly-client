@@ -4,6 +4,25 @@ import { observer } from "mobx-react";
 import { Form, Message, Container, Header, Input, Button } from "semantic-ui-react";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
+import styled from 'styled-components';
+import NavBar from '../components/NavBar';
+
+const CenterForm = styled.div `
+      display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 91.5vh;
+  background-color: #2a3443;
+`
+const Card = styled.div `
+    background-color: #fefefe;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+    padding: 2rem;
+    
+    border-radius: .20rem;
+    margin: 1rem .5rem;
+    
+`;
 
 class Login extends Component {
   constructor(props) {
@@ -60,7 +79,11 @@ class Login extends Component {
     }
 
     return (
+      <div>
+      <NavBar />
+      <CenterForm>
       <Container text>
+      <Card>
         <Header as="h2">Login</Header>
         <Form>
           <Form.Field error={!!emailError}>
@@ -82,7 +105,7 @@ class Login extends Component {
               fluid
             />
           </Form.Field>
-          <Button onClick={this.onSubmit}>Submit</Button>
+          <Button onClick={this.onSubmit} fluid>Submit</Button>
         </Form>
         {errorList.length ? (
           <Message
@@ -91,7 +114,10 @@ class Login extends Component {
             list={errorList}
           />
         ) : null}
+        </Card>
       </Container>
+      </CenterForm>
+      </div>
     );
   }
 }
