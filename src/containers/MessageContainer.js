@@ -101,4 +101,4 @@ export default graphql(messagesQuery, {
         },
         fetchPolicy: 'network-only'
     })
-})(MessageContainer);﻿
+})(MessageContainer);
