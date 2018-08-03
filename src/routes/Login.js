@@ -105,7 +105,7 @@ class Login extends Component {
               fluid
             />
           </Form.Field>
-          <Button onClick={this.onSubmit} fluid>Submit</Button>
+          <Button onClick={this.onSubmit} fluid style={{backgroundColor:"#31c56e", color:"#fff"}}>Submit</Button>
         </Form>
         {errorList.length ? (
           <Message

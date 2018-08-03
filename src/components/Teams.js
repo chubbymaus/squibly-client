@@ -5,12 +5,8 @@ import { Link } from "react-router-dom";
 const TeamWrapper = styled.div`
     grid-column: 1;
     grid-row: 1 / 4;
-    background-color: #2a3443;
-    color: #e6e6e6;
-    ul{
-        list-style-type: none;
+    background-color: #e3e3e3;
 
-    }
 `;
 
 const TeamList = styled.ul`
@@ -22,8 +18,8 @@ const TeamList = styled.ul`
 const TeamListItem = styled.li`
   height: 50px;
   width: 50px;
-  background-color: #fafafa;
-  color: #2a3443;
+  background-color: #2a3443;
+  color: #fff;
   margin: auto;
   margin-bottom: 10px;
   display: flex;

@@ -11,6 +11,8 @@ import Sidebar from '../containers/Sidebar';
 import MessageContainer from '../containers/MessageContainer';
 import { meQuery } from '../graphql/team';
 import NavBar from '../components/NavBar';
+
+
 const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
   if (loading) {
     return null;
@@ -52,6 +54,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
           }}
         />
       )}
+      
     </AppLayout>
     </div>
   );
