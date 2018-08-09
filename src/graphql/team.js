@@ -22,4 +22,4 @@ export const meQuery = gql`
   }
 `;
 
-// export const idk = {};
+export const idk = {};

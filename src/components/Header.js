@@ -12,7 +12,7 @@ const HeaderWrapper = styled.div`
 
 export default ({ channelName }) => (
     <HeaderWrapper>
-        <Header>#{channelName}</Header>
+        <Header>{channelName}</Header>
         <hr />
     </HeaderWrapper>
 );

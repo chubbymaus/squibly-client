@@ -30,7 +30,7 @@ const SendMessage = ({
                 name="message"
                 value={values.message}
                 fluid
-                placeholder={`Message #${placeholder}`}
+                placeholder={`Message ${placeholder}`}
             />
         </SendMessageWrapper>
     );

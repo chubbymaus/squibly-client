@@ -69,9 +69,7 @@ class MessageContainer extends React.Component {
                   <div>{m.created_at}</div>
                 </Comment.Metadata>
                 <Comment.Text>{m.text}</Comment.Text>
-                <Comment.Actions>
-                  <Comment.Action>Reply</Comment.Action>
-                </Comment.Actions>
+
               </Comment.Content>
             </Comment>
           ))}
@@ -95,10 +93,11 @@ const messagesQuery = gql`
 `;
 
 export default graphql(messagesQuery, {
-  variables: props => ({
-    channelId: props.channelId,
-  }),
-  options: {
-    fetchPolicy: 'network-only',
-  },
+  options: props => ({
+    variables: {
+      channelId: props.channelId
+    },
+    fetchPolicy: 'network-only'
+  })
 })(MessageContainer);
+
