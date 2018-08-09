@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Link
 } from "react-router-dom";
@@ -28,7 +28,7 @@ const NavItem = styled.div`
   color: #fff;
 `
 
- const NavBar = ({} ) => (
+ const NavBar = () => (
   <Nav>
     <NavLogo src={logo} alt="squibly logo"/>
     <NavMenu> 

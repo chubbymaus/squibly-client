@@ -16,10 +16,14 @@ const InvitePeopleModal = ({
     handleBlur,
     handleSubmit,
     isSubmitting,
+    resetForm,
     touched,
     errors
 }) => (
-        <Modal open={open} onClose={onClose} size='tiny'>
+        <Modal open={open} onClose={(e) => {
+            resetForm();
+            onClose(e);
+        }} size='tiny'>
             <Header>Add a User to your team...</Header>
             <Modal.Content>
                 <Form>
@@ -36,7 +40,12 @@ const InvitePeopleModal = ({
                     {touched.email && errors.email ? errors.email[0] : null}
                     <Form.Group widths="equal">
                         <Button color='blue' disabled={isSubmitting} onClick={handleSubmit} compact fluid type="submit">Add User</Button>
-                        <Button color='red' disabled={isSubmitting} onClick={onClose} compact fluid>Cancel</Button>
+                        <Button color='red' disabled={isSubmitting} 
+                         onClick={(e) => {
+                            resetForm();
+                            onClose(e);
+                        }}
+                        compact fluid>Cancel</Button>
                     </Form.Group>
 
                 </Form>
@@ -70,12 +79,20 @@ export default compose(
             });
             const { ok, errors } = response.data.addTeamMember;
             if (ok) {
-                onClose();
-                setSubmitting(false);
-            } else {
-                setSubmitting(false);
-                setErrors(normalizeErrors(errors));
-            }
-        },
-    }),
+                    onClose();
+                    setSubmitting(false);
+                } else {
+                    setSubmitting(false);
+                    const errorsLength = errors.length;
+                    const filteredErrors = errors.filter(e => e.message !== 'user_id must be unique');
+                    if (errorsLength !== filteredErrors.length) {
+                    filteredErrors.push({
+                        path: 'email',
+                        message: 'This user is already part of the team',
+                    });
+                    }
+                    setErrors(normalizeErrors(filteredErrors));
+                }
+                },
+        }),
 )(InvitePeopleModal);

@@ -56,11 +56,9 @@ const channel = ({ id, name }, teamId) => (
 );
 
 const user = ({ id, username }, teamId) => (
-    <Link to={`/view-team/user/${teamId}/${id}`} key={`user-${id}`}>
-        <SideBarListItem >
-
+    <Link key={`user-${id}`} to={`/view-team/user/${teamId}/${id}`} >
+        <SideBarListItem>
             <Bubble /> {username}
-
         </SideBarListItem>
     </Link>
 );
