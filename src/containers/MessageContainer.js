@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { Comment } from 'semantic-ui-react';
 
 import Messages from '../components/Messages';
+import FileUpload from '../components/FileUpload';
 
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
@@ -60,20 +61,22 @@ class MessageContainer extends React.Component {
     const { data: { loading, messages } } = this.props;
     return loading ? null : (
       <Messages>
-        <Comment.Group>
-          {messages.map(m => (
-            <Comment key={`${m.id}-message`}>
-              <Comment.Content>
-                <Comment.Author as="a">{m.user.username}</Comment.Author>
-                <Comment.Metadata>
-                  <div>{m.created_at}</div>
-                </Comment.Metadata>
-                <Comment.Text>{m.text}</Comment.Text>
+        <FileUpload disableClick>
+          <Comment.Group>
+            {messages.map(m => (
+              <Comment key={`${m.id}-message`}>
+                <Comment.Content>
+                  <Comment.Author as="a">{m.user.username}</Comment.Author>
+                  <Comment.Metadata>
+                    <div>{m.created_at}</div>
+                  </Comment.Metadata>
+                  <Comment.Text>{m.text}</Comment.Text>
 
-              </Comment.Content>
-            </Comment>
-          ))}
-        </Comment.Group>
+                </Comment.Content>
+              </Comment>
+            ))}
+          </Comment.Group>
+        </FileUpload>
       </Messages>
     );
   }
