@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Header, Input, Modal } from 'semantic-ui-react';
+import { Form, Button, Header, Input, Modal, Checkbox } from 'semantic-ui-react';
 import { withFormik } from 'formik';
 import { graphql, compose } from "react-apollo";
 import gql from "graphql-tag";
@@ -7,6 +7,7 @@ import gql from "graphql-tag";
 import findIndex from 'lodash/findIndex';
 
 import { meQuery } from '../graphql/team';
+import MultiSelectUsers from './MultiSelectUsers';
 
 const AddChannelModal = ({
     open,
@@ -17,6 +18,8 @@ const AddChannelModal = ({
     handleSubmit,
     isSubmitting,
     resetForm,
+    setFieldValue,
+    teamId,
 }) => (
         <Modal open={open} onClose={(e) => {
             resetForm();
@@ -35,16 +38,33 @@ const AddChannelModal = ({
                             placeholder='Channel Name...'
                         />
                     </Form.Field>
-
+                    <Form.Field>
+                        <Checkbox
+                            value={!values.public}
+                            label="Private"
+                            onChange={(e, { checked }) => setFieldValue('public', !checked)}
+                            toggle
+                        />
+                    </Form.Field>
+                    {values.public ? null : (
+                        <Form.Field>
+                            <MultiSelectUsers
+                                value={values.members}
+                                handleChange={(e, { value }) => setFieldValue('members', value)}
+                                teamId={teamId}
+                                placeholder="select members to invite"
+                            />
+                        </Form.Field>
+                    )}
                     <Form.Group widths="equal">
                         <Button color='blue' disabled={isSubmitting} onClick={handleSubmit} compact fluid type="submit">Create Channel</Button>
-                        <Button 
-                        color='red' 
-                        disabled={isSubmitting}
-                        onClick={(e) => {
-                            resetForm();
-                            onClose(e);
-                        }} compact fluid>Cancel</Button>
+                        <Button
+                            color='red'
+                            disabled={isSubmitting}
+                            onClick={(e) => {
+                                resetForm();
+                                onClose(e);
+                            }} compact fluid>Cancel</Button>
                     </Form.Group>
 
                 </Form>
@@ -54,8 +74,8 @@ const AddChannelModal = ({
     )
 
 const createChannelMutation = gql`
-    mutation($teamId: Int!, $name: String!) {
-      createChannel(teamId: $teamId, name: $name) {
+    mutation($teamId: Int!, $name: String!, $public: Boolean, $members: [Int!]) {
+      createChannel(teamId: $teamId, name: $name, public: $public, members: $members) {
         ok
         channel {
           id
@@ -68,10 +88,12 @@ const createChannelMutation = gql`
 export default compose(
     graphql(createChannelMutation),
     withFormik({
-        mapPropsToValues: () => ({ name: '' }),
+        mapPropsToValues: () => ({ public: true, name: '', members: [] }),
         handleSubmit: async (values, { props: { onClose, teamId, mutate }, setSubmitting }) => {
             await mutate({
-                variables: { teamId, name: values.name },
+                variables: {
+                    teamId, name: values.name, public: values.public, members: values.members,
+                },
                 optimisticResponse: {
                     createChannel: {
                         __typename: 'Mutation',
