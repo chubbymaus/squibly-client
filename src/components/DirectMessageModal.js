@@ -94,10 +94,10 @@ export default compose(
                         });
                         store.writeQuery({ query: meQuery, data });
                     }
-                    // history.push(`/view-team/${teamId}/${id}`);
+                    history.push(`/view-team/${teamId}/${id}`);
                 },
             });
-            console.log(response);
+
             onClose();
             resetForm();
         },

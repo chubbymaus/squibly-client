@@ -14,7 +14,7 @@ import NavBar from '../components/NavBar';
 
 
 const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
-  if (loading) {
+  if (loading || !me) {
     return null;
   }
 
