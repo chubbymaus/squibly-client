@@ -20,6 +20,7 @@ const AddChannelModal = ({
     resetForm,
     setFieldValue,
     teamId,
+    currentUserId,
 }) => (
         <Modal open={open} onClose={(e) => {
             resetForm();
@@ -53,6 +54,7 @@ const AddChannelModal = ({
                                 handleChange={(e, { value }) => setFieldValue('members', value)}
                                 teamId={teamId}
                                 placeholder="select members to invite"
+                                currentUserId={currentUserId}
                             />
                         </Form.Field>
                     )}

@@ -26,12 +26,15 @@ const NavMenu = styled.div`
 const NavItem = styled.div`
   padding: 0 5px;
   color: #fff;
+  &:hover{
+    color: #48acf0;
+  }
 `
 
- const NavBar = () => (
+const NavBar = () => (
   <Nav>
-    <NavLogo src={logo} alt="squibly logo"/>
-    <NavMenu> 
+    <NavLogo src={logo} alt="squibly logo" />
+    <NavMenu>
       <Link to="/view-team">
         <NavItem>View Team</NavItem>
       </Link>
