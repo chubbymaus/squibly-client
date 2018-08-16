@@ -76,6 +76,7 @@ export default compose(
                 }, resetForm, setSubmitting,
             },
         ) => {
+            // eslint-disable-next-line 
             const response = await mutate({
                 variables: { members, teamId },
                 update: (store, { data: { getOrCreateChannel } }) => {
