@@ -82,6 +82,7 @@ const createChannelMutation = gql`
         channel {
           id
           name
+          dm
         }
       }
     }
@@ -94,7 +95,10 @@ export default compose(
         handleSubmit: async (values, { props: { onClose, teamId, mutate }, setSubmitting }) => {
             await mutate({
                 variables: {
-                    teamId, name: values.name, public: values.public, members: values.members,
+                    teamId,
+                    name: values.name,
+                    public: values.public,
+                    members: values.members,
                 },
                 optimisticResponse: {
                     createChannel: {
@@ -104,6 +108,7 @@ export default compose(
                             __typename: 'Channel',
                             id: -1,
                             name: values.name,
+                            dm: false,
                         },
                     },
                 },
