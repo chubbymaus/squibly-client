@@ -6,7 +6,7 @@ import logo from '../img/chatNav.png';
 import styled from "styled-components";
 
 const Nav = styled.nav`
-  height: 60px;
+  height: 6vh;
   padding: 0 10px;
   background-color: #2a3443;
   color: #fff;

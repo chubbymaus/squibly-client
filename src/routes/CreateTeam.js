@@ -11,16 +11,14 @@ const CenterForm = styled.div`
       display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 91.5vh;
+  height: 94vh;
   background-color: #2a3443;
 `
- const Card = styled.div `
+const Card = styled.div`
     background-color: #fefefe;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
     padding: 2rem;
-    
     border-radius: .20rem;
-    margin: 1rem .5rem;
     
 `;
 
@@ -79,33 +77,33 @@ class CreateTeam extends Component {
 
         return (
             <div>
-            <NavBar />
-            <CenterForm>
-            <Container text>
-            <Card>
-                <Header as="h2">Create a Team</Header>
-                <Form>
-                    <Form.Field error={!!nameError}>
-                        <Input
-                            name="name"
-                            onChange={this.onChange}
-                            value={name}
-                            placeholder="Team Name"
-                            fluid
-                        />
-                    </Form.Field>
-                    <Button onClick={this.onSubmit} fluid style={{backgroundColor:"#31c56e", color:"#fff"}}>Submit</Button>
-                </Form>
-                {errorList.length ? (
-                    <Message
-                        error
-                        header="There was some errors with your submission"
-                        list={errorList}
-                    />
-                ) : null}
-                </Card>
-            </Container>
-            </CenterForm>
+                <NavBar />
+                <CenterForm>
+                    <Container text>
+                        <Card>
+                            <Header as="h2">Create a Team</Header>
+                            <Form>
+                                <Form.Field error={!!nameError}>
+                                    <Input
+                                        name="name"
+                                        onChange={this.onChange}
+                                        value={name}
+                                        placeholder="Team Name"
+                                        fluid
+                                    />
+                                </Form.Field>
+                                <Button onClick={this.onSubmit} fluid style={{ backgroundColor: "#31c56e", color: "#fff" }}>Submit</Button>
+                            </Form>
+                            {errorList.length ? (
+                                <Message
+                                    error
+                                    header="There was some errors with your submission"
+                                    list={errorList}
+                                />
+                            ) : null}
+                        </Card>
+                    </Container>
+                </CenterForm>
             </div>
         );
     }

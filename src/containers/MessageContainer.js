@@ -167,6 +167,7 @@ class MessageContainer extends React.Component {
                     <Comment.Metadata>
                       <div>{m.created_at}</div>
                     </Comment.Metadata>
+                    <br />
                     <Message message={m} />
                   </Comment.Content>
                 </Comment>

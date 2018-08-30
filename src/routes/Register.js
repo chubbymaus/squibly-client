@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import {Form, Message, Container, Header, Input, Button } from "semantic-ui-react";
+import { Form, Message, Container, Header, Input, Button } from "semantic-ui-react";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 
-const CenterForm = styled.div `
+const CenterForm = styled.div`
       display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 91.5vh;
+  height: 94vh;
   background-color: #2a3443;
 `
-const Card = styled.div `
+const Card = styled.div`
     background-color: #fefefe;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
     padding: 2rem;
@@ -94,52 +94,52 @@ class Register extends Component {
 
     return (
       <div>
-      <NavBar/>
-      <CenterForm>
-      <Container text>
-      <Card>
-        <Header as="h2">Register</Header>
-        <Form>
-        <Form.Field error={!!usernameError}>
-        <Input
-          name="username"
-          onChange={this.onChange}
-          value={username}
-          placeholder="Username"
-          fluid
-        />
-        </Form.Field>
-        <Form.Field error={!!emailError}>
-        <Input
-          name="email"
-          onChange={this.onChange}
-          value={email}
-          placeholder="Email"
-          fluid
-        />
-        </Form.Field>
-        <Form.Field error={!!passwordError}>
-        <Input
-          name="password"
-          onChange={this.onChange}
-          value={password}
-          type="password"
-          placeholder="Password"
-          fluid
-        />
-        </Form.Field>
-        <Button onClick={this.onSubmit} fluid style={{backgroundColor:"#31c56e", color:"#fff"}}>Submit</Button>
-        </Form>
-        {errorList.length ? (
-          <Message
-            error
-            header="There was some errors with your submission"
-            list={errorList}
-          />
-        ) : null}
-        </Card>
-      </Container>
-      </CenterForm>
+        <NavBar />
+        <CenterForm>
+          <Container text>
+            <Card>
+              <Header as="h2">Register</Header>
+              <Form>
+                <Form.Field error={!!usernameError}>
+                  <Input
+                    name="username"
+                    onChange={this.onChange}
+                    value={username}
+                    placeholder="Username"
+                    fluid
+                  />
+                </Form.Field>
+                <Form.Field error={!!emailError}>
+                  <Input
+                    name="email"
+                    onChange={this.onChange}
+                    value={email}
+                    placeholder="Email"
+                    fluid
+                  />
+                </Form.Field>
+                <Form.Field error={!!passwordError}>
+                  <Input
+                    name="password"
+                    onChange={this.onChange}
+                    value={password}
+                    type="password"
+                    placeholder="Password"
+                    fluid
+                  />
+                </Form.Field>
+                <Button onClick={this.onSubmit} fluid style={{ backgroundColor: "#31c56e", color: "#fff" }}>Submit</Button>
+              </Form>
+              {errorList.length ? (
+                <Message
+                  error
+                  header="There was some errors with your submission"
+                  list={errorList}
+                />
+              ) : null}
+            </Card>
+          </Container>
+        </CenterForm>
       </div>
     );
   }

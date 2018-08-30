@@ -10,10 +10,10 @@ import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 
 const CenterForm = styled.div`
-      display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 91.5vh;
+  height: 94vh;
   background-color: #2a3443;
 `
 const Card = styled.div`
