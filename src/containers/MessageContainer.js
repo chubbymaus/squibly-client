@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Comment } from 'semantic-ui-react';
-
+import moment from 'moment';
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
 
@@ -165,7 +165,7 @@ class MessageContainer extends React.Component {
                   <Comment.Content>
                     <Comment.Author as="a">{m.user.username}</Comment.Author>
                     <Comment.Metadata>
-                      <div>{m.created_at}</div>
+                      <div>{moment(m.created_at).format('LLL')}</div>
                     </Comment.Metadata>
                     <br />
                     <Message message={m} />
