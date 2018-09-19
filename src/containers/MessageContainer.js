@@ -24,7 +24,12 @@ const newChannelMessageSubscription = gql`
 const Message = ({ message: { url, text, filetype } }) => {
   if (url) {
     if (filetype.startsWith('image/')) {
-      return <img src={url} alt="" />;
+      return (
+        <div>
+            <img src={url} alt="" />
+            <a href={url} download>Click to download</a>
+        </div>
+      );
     } else if (filetype === 'text/plain') {
       return <RenderText url={url} />;
     } else if (filetype.startsWith('audio/')) {
@@ -33,6 +38,14 @@ const Message = ({ message: { url, text, filetype } }) => {
           <audio controls>
             <source src={url} type={filetype} />
           </audio>
+        </div>
+      );
+    }
+     else  {
+      return (
+        <div>
+            <p>{url}</p>
+            <a href={url} download>Click to download</a>
         </div>
       );
     }
