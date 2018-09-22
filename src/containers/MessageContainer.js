@@ -15,19 +15,20 @@ const newChannelMessageSubscription = gql`
         username
       }
       url
+      filename
       filetype
       created_at
     }
   }
 `;
 
-const Message = ({ message: { url, text, filetype } }) => {
+const Message = ({ message: { url, text, filetype, filename } }) => {
   if (url) {
     if (filetype.startsWith('image/')) {
       return (
         <div>
             <img src={url} alt="" />
-            <a href={url} download>Click to download</a>
+            <a href={url} download={filename}>Click to download</a>
         </div>
       );
     } else if (filetype === 'text/plain') {
@@ -44,8 +45,8 @@ const Message = ({ message: { url, text, filetype } }) => {
      else  {
       return (
         <div>
-            <p>{url}</p>
-            <a href={url} download>Click to download</a>
+            <p>{filename}</p>
+            <a href={url} download={filename} type={filetype}>Click to download</a>
         </div>
       );
     }
@@ -201,7 +202,9 @@ const messagesQuery = gql`
         username
       }
       url
+      filename
       filetype
+      
       created_at
     }
   }
