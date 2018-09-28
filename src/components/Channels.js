@@ -113,7 +113,17 @@ export default ({
                 <SideBarList>
                     <SideBarListHeader>
                         <Link to="/view-docs">
-                         <h4><Icon onClick={onDirectMessageClick} name="file alternate outline" />Team Documents</h4>
+                         <h4><Icon name="file alternate outline" />Team Documents</h4>
+                        </Link>
+                        
+                    </SideBarListHeader>
+                </SideBarList>
+            </div>
+            <div>
+                <SideBarList>
+                    <SideBarListHeader>
+                        <Link to="/admin-console">
+                         <h4><Icon name="shield alternate" />Squibly Explorer</h4>
                         </Link>
                         
                     </SideBarListHeader>

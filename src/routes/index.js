@@ -8,6 +8,7 @@ import Login from './Login';
 import CreateTeam from './CreateTeam';
 import ViewTeam from './ViewTeam';
 import ViewDocs from './ViewDocs';
+import AdminConsole from './AdminConsole';
 
 
 const isAuthenticated = () => {
@@ -52,6 +53,7 @@ const Routes = () => (
       <Route path="/login" exact component={Login} />
       <PrivateRoute path="/view-team/:teamId?/:channelId?" exact component={ViewTeam} />
       <PrivateRoute path="/view-docs/:teamId?/:channelId?" exact component={ViewDocs} />
+      <PrivateRoute path="/admin-console" exact component={AdminConsole} />
       <PrivateRoute path="/create-team" exact component={CreateTeam} />
     </Switch>
   </BrowserRouter>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Comment } from 'semantic-ui-react';
+import { Comment, Icon } from 'semantic-ui-react';
 import moment from 'moment';
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
@@ -33,20 +33,26 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
       );
     } else if (filetype === 'text/plain') {
       return <RenderText url={url} />;
-    } else if (filetype.startsWith('audio/')) {
+    } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       return (
         <div>
-          <audio controls>
-            <source src={url} type={filetype} />
-          </audio>
+            <h3> 
+            <a href={url} download={filename} type={filetype}><Icon color='green' name="file excel outline" />{filename}</a></h3>
+        </div>
+      );
+    } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml.presentation')) {
+      return (
+        <div>
+            <h3> 
+            <a href={url} download={filename} type={filetype}><Icon color='red' name="file powerpoint outline" />{filename}</a></h3>
         </div>
       );
     }
      else  {
       return (
         <div>
-            <p>{filename}</p>
-            <a href={url} download={filename} type={filetype}>Click to download</a>
+            <h3> 
+            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file word outline" />{filename}</a></h3>
         </div>
       );
     }

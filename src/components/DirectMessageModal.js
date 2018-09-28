@@ -33,6 +33,11 @@ const DirectMessageModal = ({
                             currentUserId={currentUserId}
                         />
                     </Form.Field>
+                    <Form.Field>
+                    <label>Confirm Secret Key</label>
+                        <input name="secretKey" type="password" placeholder="Enter secret key"
+                        />
+                    </Form.Field>
                     <Form.Group>
                         <Button color="blue" disabled={isSubmitting} fluid onClick={handleSubmit}>
                             Start Messaging

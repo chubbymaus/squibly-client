@@ -18,6 +18,12 @@ a {
 }
 `;
 
+const File = styled.div`
+h3{
+  padding-top: 10px;
+}
+`;
+
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
     newChannelMessage(channelId: $channelId) {
@@ -34,7 +40,7 @@ const newChannelMessageSubscription = gql`
   }
 `;
 
-const Message = ({ message: { url, text, filetype, filename } }) => {
+const Message = ({ message: { url, text, filetype, filename} }) => {
   if (url) {
     if (filetype.startsWith('image/')) {
       return (
@@ -43,22 +49,29 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
             <a href={url} download={filename}>Click to download</a>
         </div>
       );
-    } else if (filetype === 'text/plain') {
-      return <RenderText url={url} />;
+    } else if (filetype === null) {
+      return filetype;
     } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       return (
-        <div>
+        <File>
             <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='green' name="file alternate outline" />{filename}</a></h3>
-        </div>
+            <a href={url} download={filename} type={filetype}><Icon color='green' name="file excel outline" />{filename}</a></h3>
+        </File>
+      );
+    } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml.presentation')) {
+      return (
+        <File>
+            <h3> 
+            <a href={url} download={filename} type={filetype}><Icon color='red' name="file powerpoint outline" />{filename}</a></h3>
+        </File>
       );
     }
      else  {
       return (
-        <div>
+        <File>
             <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file alternate outline" />{filename}</a></h3>
-        </div>
+            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file word outline" />{filename}</a></h3>
+        </File>
       );
     }
   }
@@ -173,6 +186,7 @@ class DocsContainer extends React.Component {
           this.scroller = scroller;
         }}
       >
+
         <FileUpload
           style={{
             display: 'flex',
@@ -186,12 +200,11 @@ class DocsContainer extends React.Component {
               .slice()
               .reverse()
               .map(m => (
-                <Comment key={`${m.id}-message`}>
-                  <Comment.Content>
-                    
+                <div key={`${m.id}-message`}>
+                  
                     <Message message={m} />
-                  </Comment.Content>
-                </Comment>
+                  
+                </div>
               ))}
           </Comment.Group>
         </FileUpload>
