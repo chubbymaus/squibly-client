@@ -7,6 +7,7 @@ import Register from './Register';
 import Login from './Login';
 import CreateTeam from './CreateTeam';
 import ViewTeam from './ViewTeam';
+import ViewDocs from './ViewDocs';
 
 
 const isAuthenticated = () => {
@@ -50,6 +51,7 @@ const Routes = () => (
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
       <PrivateRoute path="/view-team/:teamId?/:channelId?" exact component={ViewTeam} />
+      <PrivateRoute path="/view-docs/:teamId?/:channelId?" exact component={ViewDocs} />
       <PrivateRoute path="/create-team" exact component={CreateTeam} />
     </Switch>
   </BrowserRouter>

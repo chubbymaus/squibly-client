@@ -109,6 +109,16 @@ export default ({
                     {dmChannels.map(dmC => dmChannel(dmC, teamId))}
                 </SideBarList>
             </div>
+            <div>
+                <SideBarList>
+                    <SideBarListHeader>
+                        <Link to="/view-docs">
+                         <h4><Icon onClick={onDirectMessageClick} name="file alternate outline" />Team Documents</h4>
+                        </Link>
+                        
+                    </SideBarListHeader>
+                </SideBarList>
+            </div>
 
 
         </ChannelWrapper>

@@ -38,6 +38,7 @@ const NavBar = () => (
       <Link to="/view-team">
         <NavItem>View Team</NavItem>
       </Link>
+  
       <Link to="/create-team">
         <NavItem>Create Team</NavItem>
       </Link>
