@@ -8,7 +8,7 @@ import NavBar from '../components/NavBar';
 import styled from 'styled-components'
 
 const CenterForm = styled.div`
-      display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   height: 94vh;
