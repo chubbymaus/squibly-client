@@ -9,7 +9,7 @@ const CenterForm = styled.div`
       display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 94vh;
+  height: 95vh;
   background-color: #2a3443;
 `
 const Card = styled.div`
