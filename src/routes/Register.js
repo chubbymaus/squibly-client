@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 
 const CenterForm = styled.div`
-      display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   height: 95vh;
@@ -27,6 +27,9 @@ class Register extends Component {
   state = {
     username: "",
     usernameError: "",
+    firstname: "",
+    lastname: "",
+    jobtitle: "",
     email: "",
     emailError: "",
     password: "",
@@ -40,9 +43,9 @@ class Register extends Component {
       passwordError: ""
     });
 
-    const { username, email, password } = this.state;
+    const { username, email, password, firstname, lastname, jobtitle } = this.state;
     const response = await this.props.mutate({
-      variables: { username, email, password }
+      variables: { username, email, password, firstname, lastname, jobtitle }
     });
 
     const { ok, errors } = response.data.register;
@@ -73,6 +76,9 @@ class Register extends Component {
       username,
       email,
       password,
+      firstname,
+      lastname,
+      jobtitle,
       usernameError,
       emailError,
       passwordError
@@ -100,12 +106,39 @@ class Register extends Component {
             <Card>
               <Header as="h2">Register</Header>
               <Form>
+              <Form.Group>
+                  <Form.Input
+                    name="firstname"
+                    onChange={this.onChange}
+                    value={firstname}
+                    placeholder="First name"
+                    width={8} 
+                    fluid
+                  />
+                  <Form.Input
+                    name="lastname"
+                    onChange={this.onChange}
+                    value={lastname}
+                    placeholder="Last name"
+                    width={8} 
+                    fluid
+                  />
+              </Form.Group>
                 <Form.Field error={!!usernameError}>
                   <Input
                     name="username"
                     onChange={this.onChange}
                     value={username}
                     placeholder="Username"
+                    fluid
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Input
+                    name="jobtitle"
+                    onChange={this.onChange}
+                    value={jobtitle}
+                    placeholder="Job Title"
                     fluid
                   />
                 </Form.Field>
@@ -146,8 +179,8 @@ class Register extends Component {
 }
 
 const registerMutation = gql`
-  mutation($username: String!, $email: String!, $password: String!) {
-    register(username: $username, email: $email, password: $password) {
+  mutation($firstname: String!, $lastname: String!, $jobtitle: String!, $username: String!, $email: String!, $password: String!) {
+    register(firstname: $firstname, lastname: $lastname, jobtitle: $jobtitle, username: $username, email: $email, password: $password) {
       ok
       errors {
         path
