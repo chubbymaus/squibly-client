@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Comment, Icon, Button } from 'semantic-ui-react';
-import moment from 'moment';
+import { Comment, Icon } from 'semantic-ui-react';
+
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
 import styled from 'styled-components';
