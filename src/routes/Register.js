@@ -27,9 +27,14 @@ class Register extends Component {
   state = {
     username: "",
     usernameError: "",
-    firstname: "",
-    lastname: "",
-    jobtitle: "",
+    firstName: "",
+    lastName: "",
+    jobTitle: "",
+    passphrase: "",
+    publicKey: "",
+    privateKey: "",
+    sigPublicKey: "",
+    sigPrivateKey: "",
     email: "",
     emailError: "",
     password: "",
@@ -43,9 +48,9 @@ class Register extends Component {
       passwordError: ""
     });
 
-    const { username, email, password, firstname, lastname, jobtitle } = this.state;
+    const { username, email, password, firstName, lastName, jobTitle, passphrase, publicKey, privateKey, sigPublicKey, sigPrivateKey } = this.state;
     const response = await this.props.mutate({
-      variables: { username, email, password, firstname, lastname, jobtitle }
+      variables: { username, email, password, firstName, lastName, jobTitle, passphrase, publicKey, privateKey, sigPublicKey, sigPrivateKey }
     });
 
     const { ok, errors } = response.data.register;
@@ -76,9 +81,14 @@ class Register extends Component {
       username,
       email,
       password,
-      firstname,
-      lastname,
-      jobtitle,
+      firstName,
+      lastName,
+      jobTitle,
+      passphrase,
+      publicKey,
+      privateKey,
+      sigPublicKey,
+      sigPrivateKey,
       usernameError,
       emailError,
       passwordError
@@ -108,17 +118,17 @@ class Register extends Component {
               <Form>
               <Form.Group>
                   <Form.Input
-                    name="firstname"
+                    name="firstName"
                     onChange={this.onChange}
-                    value={firstname}
+                    value={firstName}
                     placeholder="First name"
                     width={8} 
                     fluid
                   />
                   <Form.Input
-                    name="lastname"
+                    name="lastName"
                     onChange={this.onChange}
-                    value={lastname}
+                    value={lastName}
                     placeholder="Last name"
                     width={8} 
                     fluid
@@ -135,9 +145,9 @@ class Register extends Component {
                 </Form.Field>
                 <Form.Field>
                   <Input
-                    name="jobtitle"
+                    name="jobTitle"
                     onChange={this.onChange}
-                    value={jobtitle}
+                    value={jobTitle}
                     placeholder="Job Title"
                     fluid
                   />
@@ -151,6 +161,56 @@ class Register extends Component {
                     fluid
                   />
                 </Form.Field>
+                <Form.Field>
+                  <Input
+                    name="passphrase"
+                    onChange={this.onChange}
+                    value={passphrase}
+                    placeholder="Passphrase"
+                    fluid
+                  />
+                </Form.Field>
+                <Form.Group>
+                  <Form.Input
+                    name="publicKey"
+                    onChange={this.onChange}
+                    value={publicKey}
+                    type="password"
+                    placeholder="Public Key"
+                    width={8} 
+                    fluid
+                  />
+                  <Form.Input
+                    name="privateKey"
+                    onChange={this.onChange}
+                    value={privateKey}
+                    type="password"
+                    placeholder="Private Key"
+                    width={8} 
+                    fluid
+                  />
+              </Form.Group>
+                <Form.Group>
+                  <Form.Input
+                    name="sigPublicKey"
+                    onChange={this.onChange}
+                    value={sigPublicKey}
+                    type="password"
+                    placeholder="Signature Public Key"
+                    width={8} 
+                    fluid
+                  />
+                  <Form.Input
+                    name="sigPrivateKey"
+                    onChange={this.onChange}
+                    value={sigPrivateKey}
+                    type="password"
+                    placeholder="Signature Private Key"
+                    width={8} 
+                    fluid
+                  />
+              </Form.Group>
+
                 <Form.Field error={!!passwordError}>
                   <Input
                     name="password"
@@ -179,8 +239,8 @@ class Register extends Component {
 }
 
 const registerMutation = gql`
-  mutation($firstname: String!, $lastname: String!, $jobtitle: String!, $username: String!, $email: String!, $password: String!) {
-    register(firstname: $firstname, lastname: $lastname, jobtitle: $jobtitle, username: $username, email: $email, password: $password) {
+  mutation($firstName: String!, $lastName: String!, $jobTitle: String!, $passphrase: String!, $publicKey: String!, $privateKey: String!, $sigPublicKey: String!, $sigPrivateKey: String!, $username: String!, $email: String!, $password: String!) {
+    register(firstName: $firstName, lastName: $lastName, jobTitle: $jobTitle, passphrase: $passphrase, publicKey: $publicKey, privateKey: $privateKey, sigPublicKey: $sigPublicKey, sigPrivateKey: $sigPrivateKey, username: $username, email: $email, password: $password) {
       ok
       errors {
         path
