@@ -178,6 +178,8 @@ class MessageContainer extends React.Component {
                 <Comment key={`${m.id}-message`}>
                   <Comment.Content>
                     <Comment.Author as="a">{m.user.username}</Comment.Author>
+
+
                     <Comment.Metadata>
                       <div>{moment(m.created_at).format('LLL')}</div>
                     </Comment.Metadata>
@@ -200,6 +202,7 @@ const messagesQuery = gql`
       text
       user {
         username
+      
       }
       url
       filename

@@ -108,6 +108,87 @@ class Register extends Component {
       errorList.push(passwordError);
     }
 
+
+    const setKeys = (e) => {
+      window.Armored.createUserKeys
+          (this.state.username, this.state.passphrase)
+            .then((result) => {
+              console.log(result)
+              this.setState({
+                publicKey: result.publicKeyBase64,
+                privateKey: result.privateKeyBase64,
+                sigPublicKey: result.sigPublicKeyBase64,
+                sigPrivateKey: result.sigPrivateKeyBase64,
+              })
+            }).catch((err) => {
+              console.error(err)
+            });
+    };
+
+    const RenderKeys = () => {
+      if (this.state.publicKey.length === 0 || this.state.privateKey.length === 0 || this.state.sigPublicKey.length === 0 || this.state.sigPrivateKey.length === 0) {
+        return (
+          <div>
+          <Button onClick={setKeys} fluid style={{ backgroundColor: "#31c56e", color: "#fff" }}>Generate Keys</Button>
+          <br/>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+          <Form.Group>
+          <Form.Input
+            name="publicKey"
+            onChange={this.onChange}
+            value={publicKey}
+            type="text"
+            placeholder="Public Key"
+            width={8} 
+            fluid
+            disabled
+            label="Public Key"
+          />
+          <Form.Input
+            name="privateKey"
+            onChange={this.onChange}
+            value={privateKey}
+            type="text"
+            placeholder="Private Key"
+            disabled
+            width={8} 
+            fluid
+            label="Private Key"
+          />
+      </Form.Group>
+        <Form.Group>
+          <Form.Input
+            name="sigPublicKey"
+            onChange={this.onChange}
+            value={sigPublicKey}
+            type="text"
+            placeholder="Signature Public Key"
+            disabled
+            width={8} 
+            fluid
+            label="Signature Public Key"
+          />
+          <Form.Input
+            name="sigPrivateKey"
+            onChange={this.onChange}
+            value={sigPrivateKey}
+            type="text"
+            disabled
+            placeholder="Signature Private Key"
+            width={8} 
+            fluid
+            label="Signature Private Key"
+          />
+      </Form.Group>
+      </div>
+        );
+      }
+    }
+
     return (
       <div>
         <NavBar />
@@ -170,47 +251,8 @@ class Register extends Component {
                     fluid
                   />
                 </Form.Field>
-                <Form.Group>
-                  <Form.Input
-                    name="publicKey"
-                    onChange={this.onChange}
-                    value={publicKey}
-                    type="password"
-                    placeholder="Public Key"
-                    width={8} 
-                    fluid
-                  />
-                  <Form.Input
-                    name="privateKey"
-                    onChange={this.onChange}
-                    value={privateKey}
-                    type="password"
-                    placeholder="Private Key"
-                    width={8} 
-                    fluid
-                  />
-              </Form.Group>
-                <Form.Group>
-                  <Form.Input
-                    name="sigPublicKey"
-                    onChange={this.onChange}
-                    value={sigPublicKey}
-                    type="password"
-                    placeholder="Signature Public Key"
-                    width={8} 
-                    fluid
-                  />
-                  <Form.Input
-                    name="sigPrivateKey"
-                    onChange={this.onChange}
-                    value={sigPrivateKey}
-                    type="password"
-                    placeholder="Signature Private Key"
-                    width={8} 
-                    fluid
-                  />
-              </Form.Group>
 
+                <RenderKeys />
                 <Form.Field error={!!passwordError}>
                   <Input
                     name="password"
