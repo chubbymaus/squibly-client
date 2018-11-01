@@ -110,8 +110,7 @@ class Register extends Component {
 
 
     const setKeys = (e) => {
-      window.Armored.createUserKeys
-          (this.state.username, this.state.passphrase)
+      window.Armored.createUserKeys(this.state.username, this.state.passphrase)
             .then((result) => {
               console.log(result)
               this.setState({
