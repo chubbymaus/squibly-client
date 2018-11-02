@@ -51,7 +51,7 @@ class Login extends Component {
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
       wsLink.subscriptionClient.tryReconnect();
-      this.props.history.push("/view-team");
+      this.props.history.push("/passphrase");
     } else {
       const err = {};
       errors.forEach(({ path, message }) => {

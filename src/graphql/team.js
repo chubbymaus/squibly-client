@@ -22,6 +22,20 @@ export const meQuery = gql`
     }
   }
 `;
+export const passphraseQuery = gql`
+  {
+    me {
+      id
+      username
+      passphrase
+      publicKey
+      privateKey
+      sigPublicKey
+      sigPrivateKey
+
+      }
+  }
+`;
 
 export const getTeamMembersQuery = gql`
   query($teamId: Int!) {
