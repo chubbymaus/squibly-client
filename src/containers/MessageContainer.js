@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Comment } from 'semantic-ui-react';
+import { Comment, Icon } from 'semantic-ui-react';
 import moment from 'moment';
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
@@ -26,27 +26,26 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
   if (url) {
     if (filetype.startsWith('image/')) {
       return (
-        <div>
+        <div className="hiddenMessage">
             <img src={url} alt="" />
             <a href={url} download={filename}>Click to download</a>
         </div>
       );
     } else if (filetype === 'text/plain') {
       return <RenderText url={url} />;
-    } else if (filetype.startsWith('audio/')) {
+    } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       return (
         <div>
-          <audio controls>
-            <source src={url} type={filetype} />
-          </audio>
+            <h3> 
+            <a href={url} download={filename} type={filetype}><Icon color='green' name="file alternate outline" />{filename}</a></h3>
         </div>
       );
     }
      else  {
       return (
         <div>
-            <p>{filename}</p>
-            <a href={url} download={filename} type={filetype}>Click to download</a>
+            <h3> 
+            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file alternate outline" />{filename}</a></h3>
         </div>
       );
     }
@@ -57,6 +56,7 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
 class MessageContainer extends React.Component {
   state = {
     hasMoreItems: true,
+   
   };
 
   componentWillMount() {
@@ -145,8 +145,31 @@ class MessageContainer extends React.Component {
   };
 
   render() {
-    const { data: { loading, messages }, channelId } = this.props;
+    // eslint-disable-next-line 
+    const { data: { loading, messages }, channelId, channelName, username, isDm } = this.props;
+    // const decryptMessage = () => {
+    //   if(isDm === true){
+    //         window.Armored.decryptDirectMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
+    //               .then((result) => {
+    //                 setFieldValue('message', result);
+    //                 return result;
+    //               }).catch((err) => {
+    //                 console.error(err)
+    //               });
+
+    //   } else {
+    //         window.Armored.decryptChannelMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
+    //               .then((result) => {
+    //                 setFieldValue('message', result);
+    //                 return result;
+    //               }).catch((err) => {
+    //                 console.error(err)
+    //               });
+
+    //   }
+    // };
     return loading ? null : (
+          
       <div
         style={{
           gridColumn: 3,

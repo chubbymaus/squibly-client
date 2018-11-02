@@ -113,7 +113,7 @@ export default ({
                 <SideBarList>
                     <SideBarListHeader>
                         <Link to="/view-docs">
-                         <h4><Icon onClick={onDirectMessageClick} name="file alternate outline" />Team Documents</h4>
+                         <h4><Icon name="file alternate outline" /> Documents</h4>
                         </Link>
                         
                     </SideBarListHeader>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Comment, Icon } from 'semantic-ui-react';
+import { Comment, Icon, Grid } from 'semantic-ui-react';
 
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
@@ -48,17 +48,17 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
     } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       return (
         <div>
-            <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='green' name="file alternate outline" />{filename}</a></h3>
+          
+            <a href={url} download={filename} type={filetype}><Icon color='green' size='huge' name="file alternate outline" /><br/>{filename}</a>
         </div>
       );
     }
      else  {
       return (
-        <div>
-            <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file alternate outline" />{filename}</a></h3>
-        </div>
+        <Grid.Column>
+            
+            <a href={url} download={filename} type={filetype}><Icon color='blue' size='huge' name="file alternate outline" /><br/>{filename}</a>
+        </Grid.Column>
       );
     }
   }
@@ -181,19 +181,19 @@ class DocsContainer extends React.Component {
           channelId={channelId}
           disableClick
         >
-          <Comment.Group>
+          <Grid columns="4" relaxed>
             {messages
               .slice()
               .reverse()
               .map(m => (
-                <Comment key={`${m.id}-message`}>
-                  <Comment.Content>
+                <Grid.Column key={`${m.id}-message`}>
+                  
                     
                     <Message message={m} />
-                  </Comment.Content>
-                </Comment>
+                  
+                </Grid.Column>
               ))}
-          </Comment.Group>
+          </Grid>
         </FileUpload>
       </FileContainer>
     );

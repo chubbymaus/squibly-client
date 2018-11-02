@@ -21,8 +21,35 @@ const SendMessage = ({
     handleBlur,
     handleSubmit,
     isSubmitting,
-    channelId
-}) => (
+    setFieldValue,
+    channelId,
+    channelName,
+    username,
+    isDm
+}) => {
+    // const encryptMessage = (e) => {
+    //     if(isDm === true){
+            
+    //         window.Armored.encryptDirectMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
+    //               .then((result) => {
+    //                 setFieldValue('message', result);
+    //                 return result;
+    //               }).catch((err) => {
+    //                 console.error(err)
+    //               });
+    //     } else {
+            
+    //         window.Armored.encryptChannelMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
+    //               .then((result) => {
+    //                 setFieldValue('message', result);
+    //                 return result;
+    //               }).catch((err) => {
+    //                 console.error(err)
+    //               });
+    //     }
+      
+    //   };
+        return(
         <SendMessageWrapper>
             <FileUpload channelId={channelId}>
                 <Button icon>
@@ -32,6 +59,7 @@ const SendMessage = ({
             <Input
                 onKeyDown={(e) => {
                     if (e.keyCode === ENTER_KEY && !isSubmitting) {
+                        // encryptMessage();
                         handleSubmit(e);
                     }
                 }}
@@ -42,7 +70,7 @@ const SendMessage = ({
                 placeholder={`Message ${placeholder}`}
             />
         </SendMessageWrapper>
-    );
+    )};
 
 export default withFormik({
     mapPropsToValues: () => ({ message: '' }),
