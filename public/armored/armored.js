@@ -305,11 +305,11 @@ Armored.createChannelKeys = function (inChannelName, inPassphrase, inCallback)
  * @param {Armored~createUserKeysCallback=} inCallback
  */
 
-Armored.createUserKeys = function (inChannelName, inPassphrase, inCallback)
+Armored.createUserKeys = function (inUserName, inPassphrase, inCallback)
 {
 	if (inCallback)
 	{
-		Armored.private.createUserKeys (inChannelName, inPassphrase, inCallback);
+		Armored.private.createUserKeys (inUserName, inPassphrase, inCallback);
 	}
 	else
 	{
@@ -319,7 +319,7 @@ Armored.createUserKeys = function (inChannelName, inPassphrase, inCallback)
 			{
 				Armored.private.createUserKeys
 				(
-					inChannelName,
+					inUserName,
 					inPassphrase,
 					function (inError, inKeys)
 					{
