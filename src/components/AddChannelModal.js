@@ -23,6 +23,7 @@ const AddChannelModal = ({
     currentUserId,
 }) => {
     const setKeys = (e) => {
+        
         window.Armored.createUserKeys(values.name, values.passphrase)
               .then((result) => {
                 setFieldValue('publicKey', result.publicKeyBase64);
@@ -129,6 +130,16 @@ const AddChannelModal = ({
                         />
                     </Form.Field>
                     <Form.Field>
+                        <Input
+                            value={values.passphraseHint}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            name="passphraseHint"
+                            fluid
+                            placeholder='Passphrase hint...'
+                        />
+                    </Form.Field>
+                    <Form.Field>
                         <Checkbox
                             checked={!values.public}
                             label="Private"
@@ -166,8 +177,8 @@ const AddChannelModal = ({
 )}
 
 const createChannelMutation = gql`
-    mutation($teamId: Int!, $name: String!, $public: Boolean, $passphrase: String!, $publicKey: String!, $privateKey: String!, $sigPublicKey: String!, $sigPrivateKey: String!, $members: [Int!]) {
-      createChannel(teamId: $teamId, name: $name, public: $public, passphrase: $passphrase, publicKey: $publicKey, privateKey: $privateKey, sigPublicKey: $sigPublicKey, sigPrivateKey: $sigPrivateKey, members: $members) {
+    mutation($teamId: Int!, $name: String!, $public: Boolean, $passphraseHint: String!, $publicKey: String!, $privateKey: String!, $sigPublicKey: String!, $sigPrivateKey: String!, $members: [Int!]) {
+      createChannel(teamId: $teamId, name: $name, public: $public, passphraseHint: $passphraseHint, publicKey: $publicKey, privateKey: $privateKey, sigPublicKey: $sigPublicKey, sigPrivateKey: $sigPrivateKey, members: $members) {
         ok
         channel {
           id
@@ -181,14 +192,14 @@ const createChannelMutation = gql`
 export default compose(
     graphql(createChannelMutation),
     withFormik({
-        mapPropsToValues: () => ({ public: true, name: '', passphrase: '', publicKey: '', privateKey: '', sigPublicKey: '', sigPrivateKey: '', members: [] }),
+        mapPropsToValues: () => ({ public: true, name: '', passphrase: '', passphraseHint: '', publicKey: '', privateKey: '', sigPublicKey: '', sigPrivateKey: '', members: [] }),
         handleSubmit: async (values, { props: { onClose, teamId, mutate }, setSubmitting }) => {
             await mutate({
                 variables: {
                     teamId,
                     name: values.name,
                     public: values.public,
-                    passphrase: values.passphrase,
+                    passphraseHint: values.passphraseHint,
                     publicKey: values.publicKey,
                     privateKey: values.privateKey,
                     sigPublicKey: values.sigPublicKey,

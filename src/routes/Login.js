@@ -26,6 +26,8 @@ const Card = styled.div`
     
 `;
 
+
+
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -48,10 +50,12 @@ class Login extends Component {
     const { ok, token, refreshToken, errors } = response.data.login;
 
     if (ok) {
+      // sessionStorage.setItem( "passphrase", prompt("passphrase"));
+      // global.passphrase = prompt('passphrase')
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
       wsLink.subscriptionClient.tryReconnect();
-      this.props.history.push("/passphrase");
+      this.props.history.push("/view-team");
     } else {
       const err = {};
       errors.forEach(({ path, message }) => {

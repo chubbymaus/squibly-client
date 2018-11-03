@@ -11,14 +11,20 @@ import Sidebar from '../containers/Sidebar';
 import MessageContainer from '../containers/MessageContainer';
 import { meQuery } from '../graphql/team';
 import NavBar from '../components/NavBar';
+import axios from 'axios'
 
 
 const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
   if (loading || !me) {
     return null;
   }
-
+  
   const { id: currentUserId, username, teams } = me;
+    // axios.get(
+    //   'http://localhost:8080/graphql?query={getUserPublicKey(userId:1){id,firstName}}'
+    // ).then((result) => {
+    //   console.log(result.data)
+    // })
 
   if (!teams.length) {
     return <Redirect to="/create-team" />;

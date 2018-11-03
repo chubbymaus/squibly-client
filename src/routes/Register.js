@@ -31,6 +31,7 @@ class Register extends Component {
     lastName: "",
     jobTitle: "",
     passphrase: "",
+    passphraseHint: "",
     publicKey: "",
     privateKey: "",
     sigPublicKey: "",
@@ -48,9 +49,9 @@ class Register extends Component {
       passwordError: ""
     });
 
-    const { username, email, password, firstName, lastName, jobTitle, passphrase, publicKey, privateKey, sigPublicKey, sigPrivateKey } = this.state;
+    const { username, email, password, firstName, lastName, jobTitle, passphraseHint, publicKey, privateKey, sigPublicKey, sigPrivateKey } = this.state;
     const response = await this.props.mutate({
-      variables: { username, email, password, firstName, lastName, jobTitle, passphrase, publicKey, privateKey, sigPublicKey, sigPrivateKey }
+      variables: { username, email, password, firstName, lastName, jobTitle, passphraseHint, publicKey, privateKey, sigPublicKey, sigPrivateKey }
     });
 
     const { ok, errors } = response.data.register;
@@ -85,6 +86,7 @@ class Register extends Component {
       lastName,
       jobTitle,
       passphrase,
+      passphraseHint,
       publicKey,
       privateKey,
       sigPublicKey,
@@ -250,6 +252,15 @@ class Register extends Component {
                     fluid
                   />
                 </Form.Field>
+                <Form.Field>
+                  <Input
+                    name="passphraseHint"
+                    onChange={this.onChange}
+                    value={passphraseHint}
+                    placeholder="Passphrase Hint"
+                    fluid
+                  />
+                </Form.Field>
 
                 <RenderKeys />
                 <Form.Field error={!!passwordError}>
@@ -280,8 +291,8 @@ class Register extends Component {
 }
 
 const registerMutation = gql`
-  mutation($firstName: String!, $lastName: String!, $jobTitle: String!, $passphrase: String!, $publicKey: String!, $privateKey: String!, $sigPublicKey: String!, $sigPrivateKey: String!, $username: String!, $email: String!, $password: String!) {
-    register(firstName: $firstName, lastName: $lastName, jobTitle: $jobTitle, passphrase: $passphrase, publicKey: $publicKey, privateKey: $privateKey, sigPublicKey: $sigPublicKey, sigPrivateKey: $sigPrivateKey, username: $username, email: $email, password: $password) {
+  mutation($firstName: String!, $lastName: String!, $jobTitle: String!, $passphraseHint: String!, $publicKey: String!, $privateKey: String!, $sigPublicKey: String!, $sigPrivateKey: String!, $username: String!, $email: String!, $password: String!) {
+    register(firstName: $firstName, lastName: $lastName, jobTitle: $jobTitle, passphraseHint: $passphraseHint, publicKey: $publicKey, privateKey: $privateKey, sigPublicKey: $sigPublicKey, sigPrivateKey: $sigPrivateKey, username: $username, email: $email, password: $password) {
       ok
       errors {
         path
