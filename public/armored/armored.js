@@ -1843,11 +1843,11 @@ Armored.private.generateSessionKey = function (inCallback)
 	).catch (inCallback);
 }
 
-Armored.private.getChannelPrivateKey = function (inUserName, inPassphrase, inCallback)
+Armored.private.getChannelPrivateKey = function (inChannelName, inPassphrase, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getChannelPrivateKey(" + inUserName + ")");
+	if (Armored.config.debug) console.log ("Armored.private.getChannelPrivateKey(" + inChannelName + ")");
 	
-	var	serialisedPrivateKey = Armored.channelPrivateKeyCache [inUserName];
+	var	serialisedPrivateKey = Armored.channelPrivateKeyCache [inChannelName];
 	
 	if (serialisedPrivateKey)
 	{
@@ -1855,31 +1855,24 @@ Armored.private.getChannelPrivateKey = function (inUserName, inPassphrase, inCal
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getprivatekey?";
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){private_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					serialisedPrivateKey = Armored.Base64.decodeToUInt8Array (inJSON.data.key);
-					
-					Armored.channelPrivateKeyCache [inUserName] = serialisedPrivateKey;
-					
+					var	privateKeyBase64 = inResponse.data.getPublicKeys.privateKey;
+					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+				
+					Armored.channelPrivateKeyCache [inChannelName] = serialisedPrivateKeyBuffer;
+				
 					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "decrypt", inCallback);
 				}
 			}
@@ -1887,11 +1880,11 @@ Armored.private.getChannelPrivateKey = function (inUserName, inPassphrase, inCal
 	}
 }
 
-Armored.private.getChannelPublicKey = function (inUser, inCallback)
+Armored.private.getChannelPublicKey = function (inChannelName, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getChannelPublicKey(" + inUser + ")");
+	if (Armored.config.debug) console.log ("Armored.private.getChannelPublicKey(" + inChannelName + ")");
 	
-	var	publicKey = Armored.channelPublicKeyCache [inUser];
+	var	publicKey = Armored.channelPublicKeyCache [inChannelName];
 	
 	if (publicKey)
 	{
@@ -1899,64 +1892,47 @@ Armored.private.getChannelPublicKey = function (inUser, inCallback)
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getpublickey?"
-			+ "user=" + inUser;
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){public_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					var	publicKeyBase64 = inJSON.data.key;
-					
-					if (publicKeyBase64)
-					{
-						var	serialisedPublicKeyBuffer = Armored.Base64.decodeToArrayBuffer (publicKeyBase64);
-					
-						Armored.private.deserialisePublicKey
-						(
-							serialisedPublicKeyBuffer,
-							"encrypt",
-							function (inError, inPublicKey)
+					var	publicKeyBase64 = inResponse.data.getPublicKeys.publicKey;
+					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+				
+					Armored.private.deserialisePublicKey
+					(
+						serialisedPublicKeyBuffer,
+						"encrypt",
+						function (inError, inPublicKey)
+						{
+							if (inPublicKey)
 							{
-								if (inPublicKey)
-								{
-									Armored.channelPublicKeyCache [inUser] = inPublicKey;
-								}
-							
-								inCallback (inError, inPublicKey);
+								Armored.channelPublicKeyCache [inChannelName] = inPublicKey;
 							}
-						);
-					}
-					else
-					{
-						inCallback (null, null);
-					}
+						
+							inCallback (inError, inPublicKey);
+						}
+					);
 				}
 			}
 		);
 	}
 }
 
-Armored.private.getChannelSigPrivateKey = function (inUserName, inPassphrase, inCallback)
+Armored.private.getChannelSigPrivateKey = function (inChannelName, inPassphrase, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getChannelSigPrivateKey(" + inUserName + ")");
+	if (Armored.config.debug) console.log ("Armored.private.getChannelSigPrivateKey(" + inChannelName + ")");
 	
-	var	serialisedPrivateKey = Armored.channelSigPrivateKeyCache [inUserName];
+	var	serialisedPrivateKey = Armored.channelSigPrivateKeyCache [inChannelName];
 	
 	if (serialisedPrivateKey)
 	{
@@ -1964,31 +1940,24 @@ Armored.private.getChannelSigPrivateKey = function (inUserName, inPassphrase, in
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getsigprivatekey?";
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_private_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					serialisedPrivateKey = Armored.Base64.decodeToUInt8Array (inJSON.data.key);
-					
-					Armored.channelSigPrivateKeyCache [inUserName] = serialisedPrivateKey;
-					
+					var	privateKeyBase64 = inResponse.data.getPublicKeys.sigPrivateKey;
+					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+				
+					Armored.channelSigPrivateKeyCache [inChannelName] = serialisedPrivateKeyBuffer;
+				
 					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "sign", inCallback);
 				}
 			}
@@ -1998,63 +1967,46 @@ Armored.private.getChannelSigPrivateKey = function (inUserName, inPassphrase, in
 
 Armored.private.getChannelSigPublicKey = function (inUserName, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getChannelSigPublicKey(" + inUserName + ")");
+	if (Armored.config.debug) console.log ("Armored.private.getChannelSigPublicKey(" + inChannelName + ")");
 	
-	var	sigPublicKey = Armored.channelSigPublicKeyCache [inUserName];
+	var	publicKey = Armored.channelSigPublicKeyCache [inChannelName];
 	
-	if (sigPublicKey)
+	if (publicKey)
 	{
-		inCallback (null, sigPublicKey);
+		inCallback (null, publicKey);
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getsigpublickey?"
-			+ "user=" + inUser;
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_public_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					var	publicKeyBase64 = inJSON.data.key;
-					
-					if (publicKeyBase64)
-					{
-						var	serialisedPublicKeyBuffer = Armored.Base64.decodeToArrayBuffer (publicKeyBase64);
-					
-						Armored.private.deserialisePublicKey
-						(
-							serialisedPublicKeyBuffer,
-							"verify",
-							function (inError, inSigPublicKey)
+					var	publicKeyBase64 = inResponse.data.getPublicKeys.sigPublicKey;
+					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+				
+					Armored.private.deserialisePublicKey
+					(
+						serialisedPublicKeyBuffer,
+						"verify",
+						function (inError, inPublicKey)
+						{
+							if (inPublicKey)
 							{
-								if (inSigPublicKey)
-								{
-									Armored.channelSigPublicKeyCache [inUser] = inSigPublicKey;
-								}
-							
-								inCallback (inError, inSigPublicKey);
+								Armored.channelSigPublicKeyCache [inChannelName] = inPublicKey;
 							}
-						);
-					}
-					else
-					{
-						inCallback (inError, null);
-					}
+						
+							inCallback (inError, inPublicKey);
+						}
+					);
 				}
 			}
 		);
@@ -2073,31 +2025,24 @@ Armored.private.getUserPrivateKey = function (inUserName, inPassphrase, inCallba
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getprivatekey?";
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){private_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					serialisedPrivateKey = Armored.Base64.decodeToUInt8Array (inJSON.data.key);
-					
-					Armored.userPrivateKeyCache [inUserName] = serialisedPrivateKey;
-					
+					var	privateKeyBase64 = inResponse.data.getPublicKeys.privateKey;
+					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+				
+					Armored.userPrivateKeyCache [inUserName] = serialisedPrivateKeyBuffer;
+				
 					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "decrypt", inCallback);
 				}
 			}
@@ -2105,11 +2050,11 @@ Armored.private.getUserPrivateKey = function (inUserName, inPassphrase, inCallba
 	}
 }
 
-Armored.private.getUserPublicKey = function (inUser, inCallback)
+Armored.private.getUserPublicKey = function (inUserName, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getUserPublicKey(" + inUser + ")");
+	if (Armored.config.debug) console.log ("Armored.private.getUserPublicKey(" + inUserName + ")");
 	
-	var	publicKey = Armored.userPublicKeyCache [inUser];
+	var	publicKey = Armored.userPublicKeyCache [inUserName];
 	
 	if (publicKey)
 	{
@@ -2117,53 +2062,36 @@ Armored.private.getUserPublicKey = function (inUser, inCallback)
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getpublickey?"
-			+ "user=" + inUser;
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){public_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					var	publicKeyBase64 = inJSON.data.key;
-					
-					if (publicKeyBase64)
-					{
-						var	serialisedPublicKeyBuffer = Armored.Base64.decodeToArrayBuffer (publicKeyBase64);
-					
-						Armored.private.deserialisePublicKey
-						(
-							serialisedPublicKeyBuffer,
-							"encrypt",
-							function (inError, inPublicKey)
+					var	publicKeyBase64 = inResponse.data.getPublicKeys.publicKey;
+					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+				
+					Armored.private.deserialisePublicKey
+					(
+						serialisedPublicKeyBuffer,
+						"encrypt",
+						function (inError, inPublicKey)
+						{
+							if (inPublicKey)
 							{
-								if (inPublicKey)
-								{
-									Armored.userPublicKeyCache [inUser] = inPublicKey;
-								}
-							
-								inCallback (inError, inPublicKey);
+								Armored.userPublicKeyCache [inUserName] = inPublicKey;
 							}
-						);
-					}
-					else
-					{
-						inCallback (null, null);
-					}
+						
+							inCallback (inError, inPublicKey);
+						}
+					);
 				}
 			}
 		);
@@ -2172,7 +2100,7 @@ Armored.private.getUserPublicKey = function (inUser, inCallback)
 
 Armored.private.getUserSigPrivateKey = function (inUserName, inPassphrase, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getUserSigPrivateKey(" + inUserName + ")");
+	if (Armored.config.debug) console.log ("Armored.private.getChannelSigPrivateKey(" + inUserName + ")");
 	
 	var	serialisedPrivateKey = Armored.userSigPrivateKeyCache [inUserName];
 	
@@ -2182,31 +2110,24 @@ Armored.private.getUserSigPrivateKey = function (inUserName, inPassphrase, inCal
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getsigprivatekey?";
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_private_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					serialisedPrivateKey = Armored.Base64.decodeToUInt8Array (inJSON.data.key);
-					
-					Armored.userSigPrivateKeyCache [inUserName] = serialisedPrivateKey;
-					
+					var	privateKeyBase64 = inResponse.data.getPublicKeys.sigPrivateKey;
+					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+				
+					Armored.userSigPrivateKeyCache [inUserName] = serialisedPrivateKeyBuffer;
+				
 					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "sign", inCallback);
 				}
 			}
@@ -2218,61 +2139,44 @@ Armored.private.getUserSigPublicKey = function (inUserName, inCallback)
 {
 	if (Armored.config.debug) console.log ("Armored.private.getUserSigPublicKey(" + inUserName + ")");
 	
-	var	sigPublicKey = Armored.userSigPublicKeyCache [inUserName];
+	var	publicKey = Armored.userSigPublicKeyCache [inUserName];
 	
-	if (sigPublicKey)
+	if (publicKey)
 	{
-		inCallback (null, sigPublicKey);
+		inCallback (null, publicKey);
 	}
 	else
 	{
-		var	url = Armored.config.url + "/"
-			+ Armored.config.controller + "/"
-			+ "getsigpublickey?"
-			+ "user=" + inUser;
-	
-		monohm.Network.postJSONAsync
+		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_public_key}}"
+
+		Armored.Network.getJSONAsync
 		(
 			url,
-			function (inError, inJSON)
+			function (inError, inResponse)
 			{
 				if (inError)
 				{
 					inCallback (inError);
 				}
 				else
-				if (inJSON.type == "error")
 				{
-					inCallback (new Error (inJSON.error));
-				}
-				else
-				if (inJSON.type == "map")
-				{
-					var	publicKeyBase64 = inJSON.data.key;
-					
-					if (publicKeyBase64)
-					{
-						var	serialisedPublicKeyBuffer = Armored.Base64.decodeToArrayBuffer (publicKeyBase64);
-					
-						Armored.private.deserialisePublicKey
-						(
-							serialisedPublicKeyBuffer,
-							"verify",
-							function (inError, inSigPublicKey)
+					var	publicKeyBase64 = inResponse.data.getPublicKeys.sigPublicKey;
+					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+				
+					Armored.private.deserialisePublicKey
+					(
+						serialisedPublicKeyBuffer,
+						"verify",
+						function (inError, inPublicKey)
+						{
+							if (inPublicKey)
 							{
-								if (inSigPublicKey)
-								{
-									Armored.userSigPublicKeyCache [inUser] = inSigPublicKey;
-								}
-							
-								inCallback (inError, inSigPublicKey);
+								Armored.userSigPublicKeyCache [inUserName] = inPublicKey;
 							}
-						);
-					}
-					else
-					{
-						inCallback (inError, null);
-					}
+						
+							inCallback (inError, inPublicKey);
+						}
+					);
 				}
 			}
 		);
@@ -2608,6 +2512,40 @@ Armored.Base64.decodeToUInt8Array = function (inBase64String)
 	}
 	
 	return bytes;
+}
+
+// NETWORK SUBSYSTEM
+
+Armored.Network = new Object ();
+
+// if there is some library loaded like jQuery etc please let me know
+Armored.Network.getJSONAsync = function (inURL, inCallback)
+{
+	var	xhr = new XmlHttpRequest ();
+
+	xhr.open ("GET", inURL, true);
+	
+	xhr.onload = function (e)
+	{
+		if (xhr.readyState === 4)
+		{
+			if (xhr.status === 200)
+			{
+				inCallback (null, JSON.parse (xhr.responseText));
+			}
+			else
+			{
+				inCallback (new Error (xhr.statusText));
+			}
+		}
+	};
+	
+	xhr.onerror = function (inEvent)
+	{
+		inCallback (new Error (xhr.statusText));
+	};
+
+	xhr.send(null);
 }
 
 // STRING SUBSYSTEM
