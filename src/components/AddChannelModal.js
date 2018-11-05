@@ -26,10 +26,10 @@ const AddChannelModal = ({
         
         window.Armored.createUserKeys(values.name, values.passphrase)
               .then((result) => {
-                setFieldValue('publicKey', result.publicKeyBase64);
-                setFieldValue('privateKey', result.privateKeyBase64);
-                setFieldValue('sigPublicKey', result.sigPublicKeyBase64);
-                setFieldValue('sigPrivateKey', result.sigPrivateKeyBase64);
+                setFieldValue('public_key', result.publicKeyBase64);
+                setFieldValue('private_key', result.privateKeyBase64);
+                setFieldValue('sig_public_key', result.sigPublicKeyBase64);
+                setFieldValue('sig_private_key', result.sigPrivateKeyBase64);
                 
                 return result;
               }).catch((err) => {
@@ -38,7 +38,7 @@ const AddChannelModal = ({
       };
       
       const RenderKeys = () => {
-        if (!values.publicKey) {
+        if (!values.public_key) {
             return (
                 <div>
             <Button onClick={setKeys} fluid style={{ backgroundColor: "#31c56e", color: "#fff" }}>Generate Keys</Button>
@@ -51,9 +51,9 @@ const AddChannelModal = ({
             <div>
             <Form.Group>
             <Form.Input
-              name="publicKey"
+              name="public_key"
               onChange={handleChange}
-              value={values.publicKey}
+              value={values.public_key}
               type="text"
               placeholder="Public Key"
               width={8} 
@@ -62,9 +62,9 @@ const AddChannelModal = ({
               label="Public Key"
             />
             <Form.Input
-              name="privateKey"
+              name="private_key"
               onChange={handleChange}
-              value={values.privateKey}
+              value={values.private_key}
               type="text"
               placeholder="Private Key"
               disabled
@@ -75,9 +75,9 @@ const AddChannelModal = ({
         </Form.Group>
           <Form.Group>
             <Form.Input
-              name="sigPublicKey"
+              name="sig_public_key"
               onChange={handleChange}
-              value={values.sigPublicKey}
+              value={values.sig_public_key}
               type="text"
               placeholder="Signature Public Key"
               disabled
@@ -86,9 +86,9 @@ const AddChannelModal = ({
               label="Signature Public Key"
             />
             <Form.Input
-              name="sigPrivateKey"
+              name="sig_private_key"
               onChange={handleChange}
-              value={values.sigPrivateKey}
+              value={values.sig_private_key}
               type="text"
               disabled
               placeholder="Signature Private Key"
@@ -131,10 +131,10 @@ const AddChannelModal = ({
                     </Form.Field>
                     <Form.Field>
                         <Input
-                            value={values.passphraseHint}
+                            value={values.passphrase_hint}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            name="passphraseHint"
+                            name="passphrase_hint"
                             fluid
                             placeholder='Passphrase hint...'
                         />
@@ -177,8 +177,8 @@ const AddChannelModal = ({
 )}
 
 const createChannelMutation = gql`
-    mutation($teamId: Int!, $name: String!, $public: Boolean, $passphraseHint: String!, $publicKey: String!, $privateKey: String!, $sigPublicKey: String!, $sigPrivateKey: String!, $members: [Int!]) {
-      createChannel(teamId: $teamId, name: $name, public: $public, passphraseHint: $passphraseHint, publicKey: $publicKey, privateKey: $privateKey, sigPublicKey: $sigPublicKey, sigPrivateKey: $sigPrivateKey, members: $members) {
+    mutation($teamId: Int!, $name: String!, $public: Boolean, $passphrase_hint: String!, $public_key: String!, $private_key: String!, $sig_public_key: String!, $sig_private_key: String!, $members: [Int!]) {
+      createChannel(teamId: $teamId, name: $name, public: $public, passphrase_hint: $passphrase_hint, public_key: $public_key, private_key: $private_key, sig_public_key: $sig_public_key, sig_private_key: $sig_private_key, members: $members) {
         ok
         channel {
           id
@@ -192,18 +192,18 @@ const createChannelMutation = gql`
 export default compose(
     graphql(createChannelMutation),
     withFormik({
-        mapPropsToValues: () => ({ public: true, name: '', passphrase: '', passphraseHint: '', publicKey: '', privateKey: '', sigPublicKey: '', sigPrivateKey: '', members: [] }),
+        mapPropsToValues: () => ({ public: true, name: '', passphrase: '', passphrase_hint: '', public_key: '', private_key: '', sig_public_key: '', sig_private_key: '', members: [] }),
         handleSubmit: async (values, { props: { onClose, teamId, mutate }, setSubmitting }) => {
             await mutate({
                 variables: {
                     teamId,
                     name: values.name,
                     public: values.public,
-                    passphraseHint: values.passphraseHint,
-                    publicKey: values.publicKey,
-                    privateKey: values.privateKey,
-                    sigPublicKey: values.sigPublicKey,
-                    sigPrivateKey: values.sigPrivateKey,
+                    passphrase_hint: values.passphrase_hint,
+                    public_key: values.public_key,
+                    private_key: values.private_key,
+                    sig_public_key: values.sig_public_key,
+                    sig_private_key: values.sig_private_key,
                     members: values.members,
                 },
                 optimisticResponse: {
