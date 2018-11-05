@@ -97,6 +97,46 @@ Armored.test = function ()
 	
 }
 
+Armored.hack = function ()
+{
+	var	message = new Object ();
+	message.sender = 1;
+	message.recipient = 1;
+	message.text = "here we are";
+	
+	Armored.encryptDirectMessage (message, "chug")
+	.then
+	(
+		function (inEncryptedMessage)
+		{
+			console.log (inEncryptedMessage);
+			
+			Armored.decryptDirectMessage (inEncryptedMessage, "chug")
+			.then
+			(
+				function (inMessage)
+				{
+					console.log (inMessage);
+				}
+			)
+			.catch
+			(
+				function (inError)
+				{
+					console.error (inError);
+				}
+			);
+		}
+	)
+	.catch
+	(
+		function (inError)
+		{
+			console.error (inError);
+		}
+	);
+}
+
 // assumes that testDirectMessages() has been called
 // in order to populate the key cache
 Armored.testChannelMessages = function (inCallback)
@@ -644,8 +684,8 @@ Armored.private.createChannelKeys = function (inChannelName, inPassphrase, inCal
 				"encrypt",
 				function (inError, inPublicKey)
 				{
-					Armored.userPublicKeyCache [inChannelName] = inPublicKey;
-					Armored.userPrivateKeyCache [inChannelName] = serialisedPrivateKey;
+					Armored.channelPublicKeyCache [inChannelName] = inPublicKey;
+					Armored.channelPrivateKeyCache [inChannelName] = serialisedPrivateKey;
 					
 					Armored.private.deserialisePublicKey
 					(
@@ -653,8 +693,8 @@ Armored.private.createChannelKeys = function (inChannelName, inPassphrase, inCal
 						"verify",
 						function (inError, inSigPublicKey)
 						{
-							Armored.userSigPublicKeyCache [inChannelName] = inSigPublicKey;
-							Armored.userSigPrivateKeyCache [inChannelName] = serialisedSigPrivateKey;
+							Armored.channelSigPublicKeyCache [inChannelName] = inSigPublicKey;
+							Armored.channelSigPrivateKeyCache [inChannelName] = serialisedSigPrivateKey;
 							
 							inCallback (null, keys);
 						}
@@ -848,10 +888,10 @@ Armored.private.createUserKeys = function (inUserName, inPassphrase, inCallback)
 				return;
 			}
 			
-			// Armored.userPublicKeyCache [inUserName] = inKeys.publicKey;
-			// Armored.userPrivateKeyCache [inUserName] = inKeys.encryptedPrivateKey;
-			// Armored.userSigPublicKeyCache [inUserName] = inKeys.sigPublicKey;
-			// Armored.userSigPrivateKeyCache [inUserName] = inKeys.encryptedSigPrivateKey;
+			Armored.userPublicKeyCache [inUserName] = inKeys.publicKey;
+			Armored.userPrivateKeyCache [inUserName] = inKeys.encryptedPrivateKey;
+			Armored.userSigPublicKeyCache [inUserName] = inKeys.sigPublicKey;
+			Armored.userSigPrivateKeyCache [inUserName] = inKeys.encryptedSigPrivateKey;
 
 			// note the createKeyPairs() call makes us Base64 versions for persistence too
 			
@@ -1185,7 +1225,7 @@ Armored.private.decryptSymmetric = function (inKey, inIV, inCipherText, inCallba
 // the IV is used to init the AES128 decryption
 Armored.private.deserialisePrivateKey = function (inSerialisedKeyBuffer, inPassphrase, inUsage, inCallback)
 {
-	// if (Armored.config.debug) console.log ("Armored.private.deserialisePrivateKey(" + inUsage + ")");
+	if (Armored.config.debug) console.log ("Armored.private.deserialisePrivateKey(" + inUsage + ")");
 
 	var	salt = new Uint8Array (inSerialisedKeyBuffer, 0, 16);
 	var	iv = new Uint8Array (inSerialisedKeyBuffer, 16, 16);
@@ -1411,8 +1451,8 @@ Armored.private.digest = function (inToDigest, inIterations, inCallback)
 
 Armored.private.dispatchEvent = function (inType, inState, inData1, inData2)
 {
-	if (Armored.config.debug)
-		console.log ("Armored.private.dispatchEvent(" + inType + "," + inState + ")");
+	// if (Armored.config.debug)
+	//	console.log ("Armored.private.dispatchEvent(" + inType + "," + inState + ")");
 	
 	// caution, we might be in Node
 	if (typeof window != "undefined")
@@ -1845,7 +1885,7 @@ Armored.private.generateSessionKey = function (inCallback)
 
 Armored.private.getChannelPrivateKey = function (inChannelName, inPassphrase, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getChannelPrivateKey(" + inChannelName + ")");
+	// if (Armored.config.debug) console.log ("Armored.private.getChannelPrivateKey(" + inChannelName + ")");
 	
 	var	serialisedPrivateKey = Armored.channelPrivateKeyCache [inChannelName];
 	
@@ -1855,7 +1895,9 @@ Armored.private.getChannelPrivateKey = function (inChannelName, inPassphrase, in
 	}
 	else
 	{
-		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){private_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting private key for channel " + inChannelName);
+
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -1868,12 +1910,13 @@ Armored.private.getChannelPrivateKey = function (inChannelName, inPassphrase, in
 				}
 				else
 				{
-					var	privateKeyBase64 = inResponse.data.getPublicKeys.privateKey;
-					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
-				
+					var	privateKeyBase64 = inResponse.data.getChannelPublicKeys.private_key;
+					var	serialisedPrivateKeyArray = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+					var	serialisedPrivateKeyBuffer = serialisedPrivateKeyArray.buffer;
+					
 					Armored.channelPrivateKeyCache [inChannelName] = serialisedPrivateKeyBuffer;
 				
-					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "decrypt", inCallback);
+					Armored.private.deserialisePrivateKey (serialisedPrivateKeyBuffer, inPassphrase, "decrypt", inCallback);
 				}
 			}
 		);
@@ -1892,7 +1935,9 @@ Armored.private.getChannelPublicKey = function (inChannelName, inCallback)
 	}
 	else
 	{
-		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){public_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting public key for channel " + inChannelName);
+
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -1905,8 +1950,9 @@ Armored.private.getChannelPublicKey = function (inChannelName, inCallback)
 				}
 				else
 				{
-					var	publicKeyBase64 = inResponse.data.getPublicKeys.publicKey;
-					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	publicKeyBase64 = inResponse.data.getChannelPublicKeys.public_key;
+					var	serialisedPublicKeyArray = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	serialisedPublicKeyBuffer = serialisedPublicKeyArray.buffer;
 				
 					Armored.private.deserialisePublicKey
 					(
@@ -1940,7 +1986,9 @@ Armored.private.getChannelSigPrivateKey = function (inChannelName, inPassphrase,
 	}
 	else
 	{
-		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_private_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting sig private key for channel " + inChannelName);
+
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -1953,12 +2001,13 @@ Armored.private.getChannelSigPrivateKey = function (inChannelName, inPassphrase,
 				}
 				else
 				{
-					var	privateKeyBase64 = inResponse.data.getPublicKeys.sigPrivateKey;
-					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+					var	privateKeyBase64 = inResponse.data.getChannelPublicKeys.sig_private_key;
+					var	serialisedPrivateKeyArray = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+					var	serialisedPrivateKeyBuffer = serialisedPrivateKeyArray.buffer;
 				
 					Armored.channelSigPrivateKeyCache [inChannelName] = serialisedPrivateKeyBuffer;
 				
-					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "sign", inCallback);
+					Armored.private.deserialisePrivateKey (serialisedPrivateKeyBuffer, inPassphrase, "sign", inCallback);
 				}
 			}
 		);
@@ -1977,7 +2026,9 @@ Armored.private.getChannelSigPublicKey = function (inUserName, inCallback)
 	}
 	else
 	{
-		var	url = "/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_public_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting sig public key for channel " + inChannelName);
+
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -1990,8 +2041,9 @@ Armored.private.getChannelSigPublicKey = function (inUserName, inCallback)
 				}
 				else
 				{
-					var	publicKeyBase64 = inResponse.data.getPublicKeys.sigPublicKey;
-					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	publicKeyBase64 = inResponse.data.getChannelPublicKeys.sig_public_key;
+					var	serialisedPublicKeyArray = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	serialisedPublicKeyBuffer = serialisedPublicKeyArray.buffer;
 				
 					Armored.private.deserialisePublicKey
 					(
@@ -2025,7 +2077,9 @@ Armored.private.getUserPrivateKey = function (inUserName, inPassphrase, inCallba
 	}
 	else
 	{
-		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){private_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting private key for user " + inUserName);
+
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2038,12 +2092,13 @@ Armored.private.getUserPrivateKey = function (inUserName, inPassphrase, inCallba
 				}
 				else
 				{
-					var	privateKeyBase64 = inResponse.data.getPublicKeys.privateKey;
-					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+					var	privateKeyBase64 = inResponse.data.getUserPublicKeys.private_key;
+					var	serialisedPrivateKeyArray = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+					var	serialisedPrivateKeyBuffer = serialisedPrivateKeyArray.buffer;
 				
 					Armored.userPrivateKeyCache [inUserName] = serialisedPrivateKeyBuffer;
 				
-					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "decrypt", inCallback);
+					Armored.private.deserialisePrivateKey (serialisedPrivateKeyBuffer, inPassphrase, "decrypt", inCallback);
 				}
 			}
 		);
@@ -2062,7 +2117,9 @@ Armored.private.getUserPublicKey = function (inUserName, inCallback)
 	}
 	else
 	{
-		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){public_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting public key for user " + inUserName);
+
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2075,8 +2132,9 @@ Armored.private.getUserPublicKey = function (inUserName, inCallback)
 				}
 				else
 				{
-					var	publicKeyBase64 = inResponse.data.getPublicKeys.publicKey;
-					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	publicKeyBase64 = inResponse.data.getUserPublicKeys.public_key;
+					var	serialisedPublicKeyArray = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	serialisedPublicKeyBuffer = serialisedPublicKeyArray.buffer;
 				
 					Armored.private.deserialisePublicKey
 					(
@@ -2100,7 +2158,7 @@ Armored.private.getUserPublicKey = function (inUserName, inCallback)
 
 Armored.private.getUserSigPrivateKey = function (inUserName, inPassphrase, inCallback)
 {
-	if (Armored.config.debug) console.log ("Armored.private.getChannelSigPrivateKey(" + inUserName + ")");
+	if (Armored.config.debug) console.log ("Armored.private.getUserSigPrivateKey(" + inUserName + ")");
 	
 	var	serialisedPrivateKey = Armored.userSigPrivateKeyCache [inUserName];
 	
@@ -2110,7 +2168,9 @@ Armored.private.getUserSigPrivateKey = function (inUserName, inPassphrase, inCal
 	}
 	else
 	{
-		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_private_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting sig private key for user " + inUserName);
+
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2123,12 +2183,13 @@ Armored.private.getUserSigPrivateKey = function (inUserName, inPassphrase, inCal
 				}
 				else
 				{
-					var	privateKeyBase64 = inResponse.data.getPublicKeys.sigPrivateKey;
-					var	serialisedPrivateKeyBuffer = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+					var	privateKeyBase64 = inResponse.data.getUserPublicKeys.sig_private_key;
+					var	serialisedPrivateKeyArray = Armored.Base64.decodeToUInt8Array (privateKeyBase64);
+					var	serialisedPrivateKeyBuffer = serialisedPrivateKeyArray.buffer;
 				
 					Armored.userSigPrivateKeyCache [inUserName] = serialisedPrivateKeyBuffer;
 				
-					Armored.private.deserialisePrivateKey (serialisedPrivateKey, inPassphrase, "sign", inCallback);
+					Armored.private.deserialisePrivateKey (serialisedPrivateKeyBuffer, inPassphrase, "sign", inCallback);
 				}
 			}
 		);
@@ -2147,7 +2208,9 @@ Armored.private.getUserSigPublicKey = function (inUserName, inCallback)
 	}
 	else
 	{
-		var	url = "/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_public_key}}"
+		if (Armored.config.debug) console.log ("cache miss, getting sig public key for user " + inUserName);
+
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2160,8 +2223,9 @@ Armored.private.getUserSigPublicKey = function (inUserName, inCallback)
 				}
 				else
 				{
-					var	publicKeyBase64 = inResponse.data.getPublicKeys.sigPublicKey;
-					var	serialisedPublicKeyBuffer = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	publicKeyBase64 = inResponse.data.getUserPublicKeys.sig_public_key;
+					var	serialisedPublicKeyArray = Armored.Base64.decodeToUInt8Array (publicKeyBase64);
+					var	serialisedPublicKeyBuffer = serialisedPublicKeyArray.buffer;
 				
 					Armored.private.deserialisePublicKey
 					(
@@ -2521,7 +2585,7 @@ Armored.Network = new Object ();
 // if there is some library loaded like jQuery etc please let me know
 Armored.Network.getJSONAsync = function (inURL, inCallback)
 {
-	var	xhr = new XmlHttpRequest ();
+	var	xhr = new XMLHttpRequest ();
 
 	xhr.open ("GET", inURL, true);
 	
@@ -2531,7 +2595,20 @@ Armored.Network.getJSONAsync = function (inURL, inCallback)
 		{
 			if (xhr.status === 200)
 			{
-				inCallback (null, JSON.parse (xhr.responseText));
+				var	parsed = null;
+				
+				try
+				{
+					parsed = JSON.parse (xhr.responseText);
+
+					inCallback (null, parsed);
+				}
+				catch (inError)
+				{
+					console.error ("error getting " + inURL);
+					// console.log (xhr.responseText);
+					inCallback (inError);
+				}
 			}
 			else
 			{
