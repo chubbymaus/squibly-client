@@ -100,8 +100,8 @@ Armored.test = function ()
 Armored.hack = function ()
 {
 	var	message = new Object ();
-	message.sender = 1;
-	message.recipient = 1;
+	message.sender = "juvation";
+	message.recipient = "juvation";
 	message.text = "here we are";
 	
 	Armored.encryptDirectMessage (message, "chug")
@@ -1897,7 +1897,7 @@ Armored.private.getChannelPrivateKey = function (inChannelName, inPassphrase, in
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting private key for channel " + inChannelName);
 
-		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){private_key}}"
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelName:\"" + inChannelName + "\"){private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -1937,7 +1937,7 @@ Armored.private.getChannelPublicKey = function (inChannelName, inCallback)
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting public key for channel " + inChannelName);
 
-		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){public_key}}"
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelName:\"" + inChannelName + "\"){public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -1988,7 +1988,7 @@ Armored.private.getChannelSigPrivateKey = function (inChannelName, inPassphrase,
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting sig private key for channel " + inChannelName);
 
-		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_private_key}}"
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelName:\"" + inChannelName + "\"){sig_private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2028,7 +2028,7 @@ Armored.private.getChannelSigPublicKey = function (inUserName, inCallback)
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting sig public key for channel " + inChannelName);
 
-		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelId:" + inChannelName + "){sig_public_key}}"
+		var	url = "http://localhost:8080/graphql?query={getChannelPublicKeys(channelName:\"" + inChannelName + "\"){sig_public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2079,7 +2079,7 @@ Armored.private.getUserPrivateKey = function (inUserName, inPassphrase, inCallba
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting private key for user " + inUserName);
 
-		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){private_key}}"
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userName:\"" + inUserName + "\"){private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2119,7 +2119,7 @@ Armored.private.getUserPublicKey = function (inUserName, inCallback)
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting public key for user " + inUserName);
 
-		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){public_key}}"
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userName:\"" + inUserName + "\"){public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2170,7 +2170,7 @@ Armored.private.getUserSigPrivateKey = function (inUserName, inPassphrase, inCal
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting sig private key for user " + inUserName);
 
-		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_private_key}}"
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userName:\"" + inUserName + "\"){sig_private_key}}"
 
 		Armored.Network.getJSONAsync
 		(
@@ -2210,7 +2210,7 @@ Armored.private.getUserSigPublicKey = function (inUserName, inCallback)
 	{
 		if (Armored.config.debug) console.log ("cache miss, getting sig public key for user " + inUserName);
 
-		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userId:" + inUserName + "){sig_public_key}}"
+		var	url = "http://localhost:8080/graphql?query={getUserPublicKeys(userName:\"" + inUserName + "\"){sig_public_key}}"
 
 		Armored.Network.getJSONAsync
 		(
