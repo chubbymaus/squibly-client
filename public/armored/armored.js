@@ -101,7 +101,7 @@ Armored.hack = function ()
 {
 	var	message = new Object ();
 	message.sender = "juvation";
-	message.recipient = "juvation";
+	message.recipient = "jason";
 	message.text = "here we are";
 	
 	Armored.encryptDirectMessage (message, "chug")
