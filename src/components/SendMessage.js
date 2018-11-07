@@ -32,7 +32,9 @@ const SendMessage = ({
             
     //         window.Armored.encryptDirectMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
     //               .then((result) => {
-    //                 setFieldValue('message', result);
+    //                 setFieldValue('message', result.text);
+    //                 setFieldValue('session_key', result.session_key);
+    //                 setFieldValue('signature', result.signature);
     //                 return result;
     //               }).catch((err) => {
     //                 console.error(err)
@@ -42,6 +44,8 @@ const SendMessage = ({
     //         window.Armored.encryptChannelMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
     //               .then((result) => {
     //                 setFieldValue('message', result);
+    //                 setFieldValue('session_key', result.session_key);
+    //                 setFieldValue('signature', result.signature);
     //                 return result;
     //               }).catch((err) => {
     //                 console.error(err)

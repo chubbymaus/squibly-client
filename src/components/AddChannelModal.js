@@ -24,7 +24,7 @@ const AddChannelModal = ({
 }) => {
     const setKeys = (e) => {
         
-        window.Armored.createUserKeys(values.name, values.passphrase)
+        window.Armored.createChannelKeys(values.name, values.passphrase)
               .then((result) => {
                 setFieldValue('public_key', result.publicKeyBase64);
                 setFieldValue('private_key', result.privateKeyBase64);
