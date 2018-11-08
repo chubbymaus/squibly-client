@@ -27,32 +27,25 @@ const SendMessage = ({
     username,
     isDm
 }) => {
-    // const encryptMessage = (e) => {
-    //     if(isDm === true){
-            
-    //         window.Armored.encryptDirectMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
-    //               .then((result) => {
-    //                 setFieldValue('message', result.text);
-    //                 setFieldValue('session_key', result.session_key);
-    //                 setFieldValue('signature', result.signature);
-    //                 return result;
-    //               }).catch((err) => {
-    //                 console.error(err)
-    //               });
-    //     } else {
-            
-    //         window.Armored.encryptChannelMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
-    //               .then((result) => {
-    //                 setFieldValue('message', result);
-    //                 setFieldValue('session_key', result.session_key);
-    //                 setFieldValue('signature', result.signature);
-    //                 return result;
-    //               }).catch((err) => {
-    //                 console.error(err)
-    //               });
-    //     }
-      
-    //   };
+    const encryptMessage = (e) => {
+        if(channelName !== 'general'){
+            // window.Armored.encryptChannelMessage({sender: username, recipient: channelName, text: values.message }, sessionStorage.getItem('passphrase'))
+            //       .then((result) => {
+            //         console.log(result)  
+            //         setFieldValue('message', result.text);
+            //         setFieldValue('session_key', result.sessionkey);
+            //         setFieldValue('signature', result.signature);
+            //         handleSubmit(e);
+            //         return result;
+            //     }).catch((err) => {
+            //         console.error(err)
+            //     });
+            handleSubmit(e);
+            } else {
+                handleSubmit(e);
+            return
+        }
+      };
         return(
         <SendMessageWrapper>
             <FileUpload channelId={channelId}>
@@ -63,8 +56,8 @@ const SendMessage = ({
             <Input
                 onKeyDown={(e) => {
                     if (e.keyCode === ENTER_KEY && !isSubmitting) {
-                        // encryptMessage();
-                        handleSubmit(e);
+                        encryptMessage();
+                        
                     }
                 }}
                 onChange={handleChange}
@@ -73,18 +66,34 @@ const SendMessage = ({
                 value={values.message}
                 placeholder={`Message ${placeholder}`}
             />
+            <Input
+                style={{display:'none'}}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name="session_key"
+                value={values.session_key}
+                placeholder={`session_key`}
+            />
+            <Input
+                style={{display:'none'}}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name="signature"
+                value={values.signature}
+                placeholder={`signature`}
+            />
         </SendMessageWrapper>
     )};
 
 export default withFormik({
-    mapPropsToValues: () => ({ message: '' }),
+    mapPropsToValues: () => ({ message: '', session_key: '', signature: '' }),
     handleSubmit: async (values, { props: { onSubmit }, setSubmitting, resetForm }) => {
         if (!values.message || !values.message.trim()) {
             setSubmitting(false);
             return;
         }
 
-        await onSubmit(values.message);
+        await onSubmit(values.message, values.session_key, values.signature);
         resetForm(false);
     },
 })(SendMessage);

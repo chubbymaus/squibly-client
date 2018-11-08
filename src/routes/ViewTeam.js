@@ -61,8 +61,8 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
             isDm={channel.dm}
             channelName={channel.name}
             placeholder={channel.name}
-            onSubmit={async (text) => {
-              await mutate({ variables: { text, channelId: channel.id } });
+            onSubmit={async (text, session_key, signature) => {
+              await mutate({ variables: { text, session_key, signature, channelId: channel.id } });
             }}
           />
         )}
@@ -73,8 +73,8 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
 };
 
 const createMessageMutation = gql`
-  mutation($channelId: Int!, $text: String!) {
-    createMessage(channelId: $channelId, text: $text)
+  mutation($channelId: Int!, $text: String!, $session_key: String, $signature:String) {
+    createMessage(channelId: $channelId, text: $text, session_key: $session_key, signature: $signature)
   }
 `;
 
