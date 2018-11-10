@@ -28,19 +28,22 @@ const SendMessage = ({
     isDm
 }) => {
     const encryptMessage = (e) => {
-        if(channelName !== 'general'){
-            // window.Armored.encryptChannelMessage({sender: username, recipient: channelName, text: values.message }, sessionStorage.getItem('passphrase'))
-            //       .then((result) => {
-            //         console.log(result)  
-            //         setFieldValue('message', result.text);
-            //         setFieldValue('session_key', result.sessionkey);
-            //         setFieldValue('signature', result.signature);
-            //         handleSubmit(e);
-            //         return result;
-            //     }).catch((err) => {
-            //         console.error(err)
-            //     });
+        if (channelName === 'general'){
             handleSubmit(e);
+        }
+        if(channelName !== 'general' && isDm === false){
+            window.Armored.encryptChannelMessage({sender: username, recipient: channelName, text: values.message }, sessionStorage.getItem('passphrase'))
+                  .then((result) => {
+                    console.log(result)  
+                    setFieldValue('message', result.text);
+                    setFieldValue('session_key', result.sessionkey);
+                    setFieldValue('signature', result.signature);
+                    handleSubmit(e);
+                    return result;
+                }).catch((err) => {
+                    console.error(err)
+                });
+            // handleSubmit(e);
             } else {
                 handleSubmit(e);
             return

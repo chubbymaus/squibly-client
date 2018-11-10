@@ -6,6 +6,7 @@ import moment from 'moment';
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
 
+
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
     newChannelMessage(channelId: $channelId) {
@@ -18,11 +19,47 @@ const newChannelMessageSubscription = gql`
       filename
       filetype
       created_at
+      session_key
+      signature
     }
   }
 `;
 
-const Message = ({ message: { url, text, filetype, filename } }) => {
+class Message extends React.Component {
+  state = {
+    channelName: this.props.channelName,
+    sessionkey: this.props.sessionkey,
+    signature: this.props.signature,
+    user: this.props.user,
+    text: this.props.text,
+    isDm: this.props.isDm
+  }
+  // componentWillMount(){
+  //   const { channelName, sessionkey, text, user, signature } =this.state
+  //   if (channelName === 'general'){
+  //     return
+  //   }
+  //   if (sessionkey !== null){
+  //     window.Armored.decryptChannelMessage({ recipient: channelName, sender: user, text: text, sessionkey: sessionkey, signature: signature }, 'chubbymaus')
+  //     .then((result) => {
+  //       console.log('BEFORE_CHANGE: '+this.state.text)
+  //       this.setState({
+  //         text: result.text, 
+  //       })
+  //       console.log('AFTER_RETURNING: '+ this.state.text)
+       
+  //     }).catch((err) => {
+  //       console.error(err)
+  //     })
+  
+  //   }else{
+  //     this.setState({
+  //       text: text
+  //     })
+  //   }
+  // }
+render(){
+  const { message: { url, filetype,  filename }} = this.props;
   if (url) {
     if (filetype.startsWith('image/')) {
       return (
@@ -40,8 +77,7 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
             <a href={url} download={filename} type={filetype}><Icon color='green' name="file alternate outline" />{filename}</a></h3>
         </div>
       );
-    }
-     else  {
+    } else  {
       return (
         <div>
             <h3> 
@@ -50,13 +86,28 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
       );
     }
   }
-  return <Comment.Text>{text}</Comment.Text>;
+   if (this.state.sessionkey !== null && this.state.channelName !== 'general' && this.state.isDm === false){
+    window.Armored.decryptChannelMessage({ recipient: this.state.channelName, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, 'chubbymaus')
+    .then((result) => {
+      console.log('BEFORE_CHANGE: '+this.state.text)
+      this.setState({
+        text: result.text, 
+      })
+      console.log('AFTER_RETURNING: '+ this.state.text)
+     
+    }).catch((err) => {
+      console.error(err)
+    })
+
+  }
+  return (<Comment.Text>{this.state.text}</Comment.Text>)
+}
 };
 
 class MessageContainer extends React.Component {
   state = {
     hasMoreItems: true,
-   
+    
   };
 
   componentWillMount() {
@@ -146,7 +197,7 @@ class MessageContainer extends React.Component {
 
   render() {
     // eslint-disable-next-line 
-    const { data: { loading, messages }, channelId, channelName, username, isDm } = this.props;
+    const { data: { loading, messages }, channelId, channelName, username, isDm, session_key, signature } = this.props;
     // const decryptMessage = () => {
     //   if(isDm === true){
     //         window.Armored.decryptDirectMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
@@ -158,16 +209,29 @@ class MessageContainer extends React.Component {
     //               });
 
     //   } else {
-    //         window.Armored.decryptChannelMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
-    //               .then((result) => {
-    //                 setFieldValue('message', result);
-    //                 return result;
-    //               }).catch((err) => {
-    //                 console.error(err)
-    //               });
+            // window.Armored.decryptChannelMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
+            //       .then((result) => {
+            //         setFieldValue('message', result);
+            //         return result;
+            //       }).catch((err) => {
+            //         console.error(err)
+            //       });
 
     //   }
     // };
+    // const MessageTest = ({m}=this.props) => {
+     
+     
+    //   if(m.session_key !== null){
+    //     console.log(m)
+        
+    //     return (<Message message={m} />)
+    //   } else {
+    //     return (<Message message={m} />)
+    //   };
+      
+     
+    // }
     return loading ? null : (
           
       <div
@@ -207,7 +271,7 @@ class MessageContainer extends React.Component {
                       <div>{moment(m.created_at).format('LLL')}</div>
                     </Comment.Metadata>
                     <br />
-                    <Message message={m} />
+                    <Message channelName={channelName} text={m.text} isDm={isDm} sessionkey={m.session_key} signature={m.signature} user={m.user.username} message={m}/>
                   </Comment.Content>
                 </Comment>
               ))}
@@ -227,10 +291,12 @@ const messagesQuery = gql`
         username
       
       }
+
       url
       filename
       filetype
-      
+      session_key
+      signature
       created_at
     }
   }

@@ -19,7 +19,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
     return null;
   }
   
-  const { id: currentUserId, username, teams } = me;
+  const { id: currentUserId, username, teams,  } = me;
   // const userId = me.id;
   //   axios.get(
   //     `http://localhost:8080/graphql?query={getUserPrivateKeys(userId:${userId}){id,private_key,sig_private_key}}`
@@ -53,7 +53,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
           currentUserId={currentUserId}
         />
         {channel && <Header channelName={channel.name} />}
-        {channel && <MessageContainer channelId={channel.id} isDm={channel.dm} />}
+        {channel && <MessageContainer channelId={channel.id} channelName={channel.name} isDm={channel.dm} />}
         {channel && (
           <SendMessage
             channelId={channel.id}
