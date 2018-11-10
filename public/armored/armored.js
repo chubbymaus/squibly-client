@@ -65,6 +65,9 @@ Armored.userSigPrivateKeyCache = new Object ();
 
 Armored.test = function ()
 {
+	console.log ("test() requires two users: juvation and jason, and one channel: jason");
+	console.log ("errors will result if these entities aren't there");
+	
 	Armored.testDirectMessages
 	(
 		function (inError)
@@ -97,104 +100,42 @@ Armored.test = function ()
 	
 }
 
-Armored.hack = function ()
-{
-	var	message = new Object ();
-	message.sender = "juvation";
-	message.recipient = "jason";
-	message.text = "here we are";
-	
-	Armored.encryptDirectMessage (message, "chug")
-	.then
-	(
-		function (inEncryptedMessage)
-		{
-			console.log (inEncryptedMessage);
-			
-			Armored.decryptDirectMessage (inEncryptedMessage, "chug")
-			.then
-			(
-				function (inMessage)
-				{
-					console.log (inMessage);
-				}
-			)
-			.catch
-			(
-				function (inError)
-				{
-					console.error (inError);
-				}
-			);
-		}
-	)
-	.catch
-	(
-		function (inError)
-		{
-			console.error (inError);
-		}
-	);
-}
-
 // assumes that testDirectMessages() has been called
 // in order to populate the key cache
 Armored.testChannelMessages = function (inCallback)
 {
-	var	userOne = "jason";
-	var	userTwo = "joe";
+	var	userOne = "juvation";
+	var	userTwo = "jason";
 	var	userOnePassphrase = "chug";
-	var	userTwoPassphrase = "pelt";
-	var	channel = "random";
-	var	channelPassphrase = "randomstuffs";
+	var	userTwoPassphrase = "chug";
+	var	channel = "jason";
+	var	channelPassphrase = "chug";
 	
-	Armored.createChannelKeys (channel, channelPassphrase).then
+	var	message = new Object ();
+	message.sender = userOne;
+	message.recipient = channel;
+	message.text = "this is the text of a channel message";
+	
+	Armored.encryptChannelMessage (message, userOnePassphrase)
+	.then
 	(
-		function (inKeys)
+		function (inEncryptedMessage)
 		{
-			var	message = 
-			{
-				sender: userOne,
-				recipient: channel,
-				text: "hey this is a post to the random channel"
-			};
-	
-			Armored.encryptChannelMessage
+			// now see whether a channel subscriber
+			// who is neither sender nor recipient
+			// can read the post
+			Armored.decryptChannelMessage (inEncryptedMessage, channelPassphrase)
+			.then
 			(
-				message,
-				userOnePassphrase,
-				function (inError, inEncryptedMessage)
+				function (inMessage)
 				{
-					if (inError)
-					{
-						inCallback (inError);
-						return;
-					}
-					
-					// now see whether a channel subscriber
-					// who is neither sender nor recipient
-					// can read the post
-					Armored.decryptChannelMessage
-					(
-						inEncryptedMessage,
-						channelPassphrase,
-						function (inError, inMessage)
-						{
-							if (inError)
-							{
-								inCallback (inError);
-							}
-							else
-							{
-								console.log ("decrypted channel message OK");
-								console.log (inMessage.text);
-							
-								inCallback ();
-							}
-						}
-					);
+					console.log ("decrypted channel message OK");
+					console.log (inMessage.text);
+				
+					inCallback ();
 				}
-			);
+			)
+			.catch (inCallback);
 		}
 	)
 	.catch (inCallback);
@@ -202,75 +143,59 @@ Armored.testChannelMessages = function (inCallback)
 
 Armored.testDirectMessages = function (inCallback)
 {
-	var	userOne = "jason";
-	var	userTwo = "joe";
+	var	userOne = "juvation";
+	var	userTwo = "jason";
 	var	passphraseOne = "chug";
-	var	passphraseTwo = "pelt";
+	var	passphraseTwo = "chug";
 	
-	Armored.createUserKeys (userOne, passphraseOne).then
+	var	message = new Object ();
+	message.sender = userOne;
+	message.recipient = userTwo;
+	message.text = "this is the text of a direct message";
+	
+	Armored.encryptDirectMessage (message, passphraseOne).then
 	(
-		function (inUserOneKeys)
+		function (inEncryptedMessage)
 		{
-			Armored.createUserKeys (userTwo, passphraseTwo).then
+			console.log (inEncryptedMessage);
+	
+			Armored.decryptDirectMessage (inEncryptedMessage, passphraseTwo).then
 			(
-				function (inUserTwoKeys)
+				function (inMessage)
 				{
-					var	message = 
+					console.log ("decrypted direct message ok");
+					console.log (inMessage.text);
+				
+					var	reply = 
 					{
-						sender: userOne,
-						recipient: userTwo,
-						text: "hey, this is the message text"
+						sender: userTwo,
+						recipient: userOne,
+						text: "hey, this is the reply to the message text"
 					};
-			
-					Armored.encryptDirectMessage (message, passphraseOne).then
-					(
-						function (inEncryptedMessage)
-						{
-							console.log (inEncryptedMessage);
-					
-							Armored.decryptDirectMessage (inEncryptedMessage, passphraseTwo).then
-							(
-								function (inMessage)
-								{
-									console.log ("decrypted direct message ok");
-									console.log (inMessage.text);
-								
-									var	reply = 
-									{
-										sender: userTwo,
-										recipient: userOne,
-										text: "hey, this is the reply to the message text"
-									};
 
-									// now let's go the other way
-									Armored.encryptDirectMessage (reply, passphraseTwo).then
-									(
-										function (inEncryptedReply)
-										{
-											Armored.decryptDirectMessage (inEncryptedReply, passphraseOne).then
-											(
-												function (inReply)
-												{
-													console.log ("decrypted reply to direct message ok");
-													console.log (inReply.text);
-													
-													inCallback ();
-												}
-											)
-											.catch (inCallback);
-										}
-									)
-									.catch (inCallback);
-								}		
+					// now let's go the other way
+					Armored.encryptDirectMessage (reply, passphraseTwo).then
+					(
+						function (inEncryptedReply)
+						{
+							Armored.decryptDirectMessage (inEncryptedReply, passphraseOne).then
+							(
+								function (inReply)
+								{
+									console.log ("decrypted reply to direct message ok");
+									console.log (inReply.text);
+									
+									inCallback ();
+								}
 							)
 							.catch (inCallback);
-						}		
+						}
 					)
 					.catch (inCallback);
-				}
+				}		
 			)
 			.catch (inCallback);
-		}
+		}		
 	)
 	.catch (inCallback);
 }
