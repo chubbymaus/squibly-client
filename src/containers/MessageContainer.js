@@ -87,7 +87,7 @@ render(){
     }
   }
    if (this.state.sessionkey !== null && this.state.channelName !== 'general' && this.state.isDm === false){
-    window.Armored.decryptChannelMessage({ recipient: this.state.channelName, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, 'chubbymaus')
+    window.Armored.decryptChannelMessage({ recipient: this.state.channelName, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, sessionStorage.getItem(`${this.state.channelName}-passphrase`))
     .then((result) => {
       console.log('BEFORE_CHANGE: '+this.state.text)
       this.setState({
@@ -198,40 +198,7 @@ class MessageContainer extends React.Component {
   render() {
     // eslint-disable-next-line 
     const { data: { loading, messages }, channelId, channelName, username, isDm, session_key, signature } = this.props;
-    // const decryptMessage = () => {
-    //   if(isDm === true){
-    //         window.Armored.decryptDirectMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
-    //               .then((result) => {
-    //                 setFieldValue('message', result);
-    //                 return result;
-    //               }).catch((err) => {
-    //                 console.error(err)
-    //               });
 
-    //   } else {
-            // window.Armored.decryptChannelMessage({sender: username, recipient: channelName, text: values.message }, 'values.passphrase')
-            //       .then((result) => {
-            //         setFieldValue('message', result);
-            //         return result;
-            //       }).catch((err) => {
-            //         console.error(err)
-            //       });
-
-    //   }
-    // };
-    // const MessageTest = ({m}=this.props) => {
-     
-     
-    //   if(m.session_key !== null){
-    //     console.log(m)
-        
-    //     return (<Message message={m} />)
-    //   } else {
-    //     return (<Message message={m} />)
-    //   };
-      
-     
-    // }
     return loading ? null : (
           
       <div

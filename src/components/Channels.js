@@ -52,13 +52,20 @@ const AddUserIcon = styled.span`
 `;
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
-const channel = ({ id, name }, teamId) => (
-    <Link key={`channel-${id}`} to={`/view-team/${teamId}/${id}`}>
+const channel = ({ id, name }, teamId) => {
+    const setPassphrase = (e) => {
+        if (sessionStorage.getItem(`${name}-passphrase`)===null){
+            sessionStorage.setItem( `${name}-passphrase`, prompt("channel passphrase"));
+        }
+        return
+    }
+    return(
+    <Link key={`channel-${id}`} onClick={setPassphrase} to={`/view-team/${teamId}/${id}`}>
         <SideBarListItem>
             # {name}
         </SideBarListItem>
     </Link>
-);
+)};
 
 const dmChannel = ({ id, name }, teamId) => (
     <Link key={`user-${id}`} to={`/view-team/${teamId}/${id}`}>
