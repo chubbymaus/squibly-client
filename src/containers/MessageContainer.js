@@ -34,30 +34,7 @@ class Message extends React.Component {
     text: this.props.text,
     isDm: this.props.isDm
   }
-  // componentWillMount(){
-  //   const { channelName, sessionkey, text, user, signature } =this.state
-  //   if (channelName === 'general'){
-  //     return
-  //   }
-  //   if (sessionkey !== null){
-  //     window.Armored.decryptChannelMessage({ recipient: channelName, sender: user, text: text, sessionkey: sessionkey, signature: signature }, 'chubbymaus')
-  //     .then((result) => {
-  //       console.log('BEFORE_CHANGE: '+this.state.text)
-  //       this.setState({
-  //         text: result.text, 
-  //       })
-  //       console.log('AFTER_RETURNING: '+ this.state.text)
-       
-  //     }).catch((err) => {
-  //       console.error(err)
-  //     })
-  
-  //   }else{
-  //     this.setState({
-  //       text: text
-  //     })
-  //   }
-  // }
+
 render(){
   const { message: { url, filetype,  filename }} = this.props;
   if (url) {
