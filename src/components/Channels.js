@@ -43,18 +43,21 @@ i:hover{
 }
 `;
 
+
+
 const PushLeft = styled.div`${paddingLeft};`;
 
 const Green = styled.span`color: #31C56E;`;
 
 const AddUserIcon = styled.span`
     color: #31C56E;
+
 `;
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
 const channel = ({ id, name }, teamId) => {
     const setPassphrase = (e) => {
-        if (sessionStorage.getItem(`${name}-passphrase`)===null){
+        if (sessionStorage.getItem(`${name}-passphrase`)===null && name !== 'general'){
             sessionStorage.setItem( `${name}-passphrase`, prompt("channel passphrase"));
         }
         return
@@ -67,19 +70,22 @@ const channel = ({ id, name }, teamId) => {
     </Link>
 )};
 
-const dmChannel = ({ id, name }, teamId) => (
-    <Link key={`user-${id}`} to={`/view-team/${teamId}/${id}`}>
-        <SideBarListItem >
-            <Bubble /> {name}
+const user = ({ id, username }, teamId,) => {
+
+    return(
+    <Link key={`user-${id}`} to={`/view-team/user/${teamId}/${id}`} >
+        <SideBarListItem>
+            <Bubble /> {username}
         </SideBarListItem>
     </Link>
-);
+    )
+};
 
 export default ({
     teamName,
     username,
     channels,
-    dmChannels,
+    users,
     onAddChannelClick,
     teamId,
     onInvitePeopleClick,
@@ -113,8 +119,8 @@ export default ({
                     <SideBarListHeader>
                         Direct Messages <Icon onClick={onDirectMessageClick} name="add circle" />
                     </SideBarListHeader>
-                    {dmChannels.map(dmC => dmChannel(dmC, teamId))}
-                </SideBarList>
+                    {users.map(u => user(u, teamId))}
+                    </SideBarList>
             </div>
             <div>
                 <SideBarList>

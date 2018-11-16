@@ -56,8 +56,8 @@ export default class Sidebar extends React.Component {
                 teamName={team.name}
                 username={username}
                 teamId={team.id}
-                channels={regularChannels}
-                dmChannels={dmChannels}
+                channels={team.channels}
+                users={team.directMessageMembers}
                 onAddChannelClick={this.toggleAddChannelModal}
                 onInvitePeopleClick={this.toggleInvitePeopleModal}
                 onDirectMessageClick={this.toggleDirectMessageModal}

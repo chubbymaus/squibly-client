@@ -25,12 +25,11 @@ const SendMessage = ({
     channelId,
     channelName,
     username,
-    isDm
+    isDm,
+    recipientUser
 }) => {
     const encryptMessage = (e) => {
-        if (channelName === 'general'){
-            handleSubmit(e);
-        }
+
         if(channelName !== 'general' && isDm === false){
             window.Armored.encryptChannelMessage({sender: username, recipient: channelName, text: values.message }, sessionStorage.getItem('passphrase'))
                   .then((result) => {
@@ -44,8 +43,20 @@ const SendMessage = ({
                     console.error(err)
                 });
             // handleSubmit(e);
+            } else if(recipientUser && channelName !== 'general'){
+                window.Armored.encryptDirectMessage({sender: username, recipient: recipientUser, text: values.message }, sessionStorage.getItem('passphrase'))
+                .then((result) => {
+                  console.log(result)  
+                  setFieldValue('message', result.text);
+                  setFieldValue('session_key', result.sessionkey);
+                  setFieldValue('signature', result.signature);
+                  handleSubmit(e);
+                  return result;
+              }).catch((err) => {
+                  console.error(err)
+              });
             } else {
-                handleSubmit(e);
+            handleSubmit(e);
             return
         }
       };

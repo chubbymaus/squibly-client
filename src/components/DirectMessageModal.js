@@ -1,106 +1,76 @@
 import React from 'react';
-import { Form, Button, Modal } from 'semantic-ui-react';
-import { graphql, compose } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
-import { withFormik } from 'formik';
-import gql from 'graphql-tag';
-import findIndex from 'lodash/findIndex';
+import { Form, Input, Button, Modal } from 'semantic-ui-react';
+import Downshift from 'downshift';
 
-import MultiSelectUsers from './MultiSelectUsers';
-import { meQuery } from '../graphql/team';
+import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
+
+import { getTeamMembersQuery } from '../graphql/team';
 
 const DirectMessageModal = ({
+    history,
     open,
     onClose,
     teamId,
-    currentUserId,
-    values,
-    handleSubmit,
-    isSubmitting,
-    resetForm,
-    setFieldValue,
+    data: { loading, getTeamMembers },
 }) => (
         <Modal open={open} onClose={onClose}>
-            <Modal.Header>Direct Messaging</Modal.Header>
+            <Modal.Header>Send A Direct Message</Modal.Header>
             <Modal.Content>
                 <Form>
                     <Form.Field>
-                        <MultiSelectUsers
-                            value={values.members}
-                            handleChange={(e, { value }) => setFieldValue('members', value)}
-                            teamId={teamId}
-                            placeholder="select members to message"
-                            currentUserId={currentUserId}
-                        />
+                        {!loading && (
+                            <Downshift
+                                onChange={(selectedUser) => {
+                                    history.push(`/view-team/user/${teamId}/${selectedUser.id}`);
+                                    onClose();
+                                }}>
+                                {({
+                                    getInputProps,
+                                    getItemProps,
+                                    isOpen,
+                                    inputValue,
+                                    selectedItem,
+                                    highlightedIndex,
+                                }) => (
+                                        <div>
+                                            <Input {...getInputProps({ placeholder: 'Who do you want to message?' })} fluid />
+                                            {isOpen ? (
+                                                <div style={{ border: '1px solid #ccc', borderRadius: '3px' }}>
+                                                    {getTeamMembers
+                                                        .filter(i =>
+                                                            !inputValue ||
+                                                            i.username.toLowerCase().includes(inputValue.toLowerCase()))
+                                                        .map((item, index) => (
+                                                            <div
+                                                                {...getItemProps({ item })}
+                                                                key={item.id}
+                                                                style={{
+                                                                    backgroundColor: highlightedIndex === index ? '#31c56e' : 'white',
+                                                                    color: highlightedIndex === index ? '#fff' : '#333',
+                                                                    fontWeight: selectedItem === item ? 'bold' : 'normal',
+                                                                    paddingLeft: '10px',
+
+                                                                }}
+                                                            >
+                                                                {item.username}
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    )}
+                            </Downshift>
+                        )}
                     </Form.Field>
-                    <Form.Group>
-                        <Button color="blue" disabled={isSubmitting} fluid onClick={handleSubmit}>
-                            Start Messaging
-                        </Button>
-                        <Button
-                            color="red"
-                            disabled={isSubmitting}
-                            fluid
-                            onClick={(e) => {
-                                resetForm();
-                                onClose(e);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                    </Form.Group>
+                    <Button fluid onClick={onClose} style={{ backgroundColor: '#f45c57', color: '#fff' }}>
+                        Cancel
+                </Button>
                 </Form>
             </Modal.Content>
         </Modal>
     );
 
-const getOrCreateChannelMutation = gql`
-  mutation($teamId: Int!, $members: [Int!]!) {
-    getOrCreateChannel(teamId: $teamId, members: $members) {
-      id
-      name
-    }
-  }
-`;
 
-export default compose(
-    withRouter,
-    graphql(getOrCreateChannelMutation),
-    withFormik({
-        mapPropsToValues: () => ({ members: [] }),
-        handleSubmit: async (
-            { members },
-            {
-                props: {
-                    history, onClose, teamId, mutate,
-                }, resetForm, setSubmitting,
-            },
-        ) => {
-            // eslint-disable-next-line 
-            const response = await mutate({
-                variables: { members, teamId },
-                update: (store, { data: { getOrCreateChannel } }) => {
-                    const { id, name } = getOrCreateChannel;
 
-                    const data = store.readQuery({ query: meQuery });
-                    const teamIdx = findIndex(data.me.teams, ['id', teamId]);
-                    const notInChannelList = data.me.teams[teamIdx].channels.every(c => c.id !== id);
-
-                    if (notInChannelList) {
-                        data.me.teams[teamIdx].channels.push({
-                            __typename: 'Channel',
-                            id,
-                            name,
-                            dm: true,
-                        });
-                        store.writeQuery({ query: meQuery, data });
-                    }
-                    history.push(`/view-team/${teamId}/${id}`);
-                },
-            });
-
-            onClose();
-            resetForm();
-        },
-    }),
-)(DirectMessageModal);
+export default withRouter(graphql(getTeamMembersQuery)(DirectMessageModal));
