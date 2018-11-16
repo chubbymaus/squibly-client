@@ -125,6 +125,7 @@ const AddChannelModal = ({
                             onChange={handleChange}
                             onBlur={handleBlur}
                             name="passphrase"
+                            type="password"
                             fluid
                             placeholder='Channel passphrase...'
                         />

@@ -248,6 +248,7 @@ class Register extends Component {
                     name="passphrase"
                     onChange={this.onChange}
                     value={passphrase}
+                    type='password'
                     placeholder="Passphrase"
                     fluid
                   />
