@@ -39,7 +39,7 @@ class Message extends React.Component {
             receivingUser
         } = this.props;
 
-        if( this.props.currentUser !== this.state.user && this.props.currentUser !== this.state.recipientUser ){
+        if( receivingUser !== this.state.user && this.props.currentUser !== this.state.recipientUser ){
             return null
         }
         if( this.props.currentUser !== this.state.user ){
