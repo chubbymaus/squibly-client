@@ -42,14 +42,16 @@ const ViewTeam = ({ mutate, data: { loading, me, getUser }, match: { params: { t
                 <Header channelName={getUser.username} />
                 <DirectMessageContainer teamId={team.id} receivingUser={getUser.username} currentUser={username} userId={userId} />
                 <SendMessage
-                    onSubmit={async (text, session_key, signature) => {
+                    onSubmit={async (text, session_key, signature, sender_name, receiver_name) => {
                         const response = await mutate({
                             variables: {
                                 text,
                                 receiverId: userId,
                                 teamId,
                                 session_key, 
-                                signature
+                                signature,
+                                sender_name,
+                                receiver_name
                             },
                             optimisticResponse: {
                                 createDirectMessage: true,
@@ -80,8 +82,8 @@ const ViewTeam = ({ mutate, data: { loading, me, getUser }, match: { params: { t
 };
 
 const createDirectMessageMutation = gql`
-  mutation($receiverId: Int!, $text: String!, $teamId: Int!, $session_key: String, $signature:String) {
-    createDirectMessage(receiverId: $receiverId, text: $text, teamId: $teamId, session_key: $session_key, signature: $signature)
+  mutation($receiverId: Int!, $text: String!, $teamId: Int!, $sender_name: String!, $receiver_name: String!, $session_key: String, $signature:String) {
+    createDirectMessage(receiverId: $receiverId, text: $text, teamId: $teamId, sender_name: $sender_name, receiver_name: $receiver_name, session_key: $session_key, signature: $signature)
   }
 `;
 

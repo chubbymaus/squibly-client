@@ -19,6 +19,8 @@ const newDirectMessageSubscription = gql`
       created_at
       session_key
       signature
+      sender_name
+      receiver_name
     }
   }
 `;
@@ -33,15 +35,8 @@ class Message extends React.Component {
     }
   
   render(){
-        const {
-            recipientUser,
-            user,
-            receivingUser
-        } = this.props;
 
-        if( receivingUser !== this.state.user && this.props.currentUser !== this.state.recipientUser ){
-            return null
-        }
+    
         if( this.props.currentUser !== this.state.user ){
         window.Armored.decryptDirectMessage({ recipient: this.state.recipientUser, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, sessionStorage.getItem(`passphrase`))
         .then((result) => {
@@ -69,14 +64,7 @@ class Message extends React.Component {
 
     }
    
-    return (
-        <div>
-            <Comment.Text>{this.state.text}</Comment.Text>
-            <Comment.Text>recipient:{recipientUser}</Comment.Text>
-            <Comment.Text>user:{user}</Comment.Text>
-            <Comment.Text>receiver:{receivingUser}</Comment.Text>
-            </div>
-        )
+    return (<Comment.Text>{this.state.text}</Comment.Text>)
   
     }};
 
@@ -125,17 +113,31 @@ class DirectMessageContainer extends React.Component {
         return loading ? null : (
             <Messages>
                 <Comment.Group>
-                    {directMessages.map(m => (
+                    {directMessages.map(m => {
+                        if(m.sender_name === currentUser && currentUser !== m.receiver_name){
+                            return null
+                        } else if(m.sender_name !== currentUser && currentUser !== m.receiver_name){
+                            return null
+                        } else {
+                        return(
                         <Comment key={`${m.id}-direct-message`}>
                             <Comment.Content>
                                 <Comment.Author as="a">{m.sender.username}</Comment.Author>
                                 <Comment.Metadata>
                                     <div>{moment(m.created_at).format('LLL')}</div>
                                 </Comment.Metadata>
-                                <Message recipientUser={m.receiver.username} currentUser={currentUser} receivingUser={receivingUser} text={m.text} sessionkey={m.session_key} signature={m.signature} user={m.sender.username} message={m}/>
+                                <Message 
+                                recipientUser={m.receiver.username} 
+                                sender_name={m.sender_name} 
+                                receiver_name={m.receiver_name} 
+                                currentUser={currentUser} 
+                                receivingUser={receivingUser} 
+                                text={m.text} 
+                                sessionkey={m.session_key} 
+                                signature={m.signature} user={m.sender.username} message={m}/>
                             </Comment.Content>
                         </Comment>
-                    ))}
+                    )}})}
                 </Comment.Group>
             </Messages>
         );
@@ -156,6 +158,8 @@ const directMessagesQuery = gql`
       created_at
       session_key
       signature
+      sender_name
+      receiver_name
     }
   }
 `;

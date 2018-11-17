@@ -50,6 +50,8 @@ const SendMessage = ({
                   setFieldValue('message', result.text);
                   setFieldValue('session_key', result.sessionkey);
                   setFieldValue('signature', result.signature);
+                  setFieldValue('sender_name', username);
+                  setFieldValue('receiver_name', recipientUser);
                   handleSubmit(e);
                   return result;
               }).catch((err) => {
@@ -61,6 +63,8 @@ const SendMessage = ({
                   setFieldValue('message', result.text);
                   setFieldValue('session_key', result.sessionkey);
                   setFieldValue('signature', result.signature);
+                  setFieldValue('sender_name', username);
+                  setFieldValue('receiver_name', username);
                   handleSubmit(e);
                   return result;
               }).catch((err) => {
@@ -107,18 +111,34 @@ const SendMessage = ({
                 value={values.signature}
                 placeholder={`signature`}
             />
+            <Input
+                style={{display:'none'}}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name="sender_name"
+                value={values.sender_name}
+                placeholder={`sender_name`}
+            />
+            <Input
+                style={{display:'none'}}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name="receiver_name"
+                value={values.receiver_name}
+                placeholder={`receiver_name`}
+            />
         </SendMessageWrapper>
     )};
 
 export default withFormik({
-    mapPropsToValues: () => ({ message: '', session_key: '', signature: '' }),
+    mapPropsToValues: () => ({ message: '', session_key: '', signature: '', sender_name:'', receiver_name:'' }),
     handleSubmit: async (values, { props: { onSubmit }, setSubmitting, resetForm }) => {
         if (!values.message || !values.message.trim()) {
             setSubmitting(false);
             return;
         }
 
-        await onSubmit(values.message, values.session_key, values.signature);
+        await onSubmit(values.message, values.session_key, values.signature, values.sender_name, values.receiver_name);
         resetForm(false);
     },
 })(SendMessage);
