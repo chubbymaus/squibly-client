@@ -40,7 +40,7 @@ const ViewTeam = ({ mutate, data: { loading, me, getUser }, match: { params: { t
                     username={username}
                 />
                 <Header channelName={getUser.username} />
-                <DirectMessageContainer teamId={team.id} recipientUser={getUser.username} userId={userId} />
+                <DirectMessageContainer teamId={team.id} receivingUser={getUser.username} currentUser={username} userId={userId} />
                 <SendMessage
                     onSubmit={async (text, session_key, signature) => {
                         const response = await mutate({

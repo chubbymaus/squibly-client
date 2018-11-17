@@ -33,20 +33,50 @@ class Message extends React.Component {
     }
   
   render(){
-    window.Armored.decryptDirectMessage({ recipient: this.state.recipientUser, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, sessionStorage.getItem(`passphrase`))
-      .then((result) => {
-        console.log('BEFORE_CHANGE: '+this.state.text)
-        this.setState({
-          text: result.text, 
+        const {
+            recipientUser,
+            user,
+            receivingUser
+        } = this.props;
+
+        if( this.props.currentUser !== this.state.user && this.props.currentUser !== this.state.recipientUser ){
+            return null
+        }
+        if( this.props.currentUser !== this.state.user ){
+        window.Armored.decryptDirectMessage({ recipient: this.state.recipientUser, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, sessionStorage.getItem(`passphrase`))
+        .then((result) => {
+            console.log('BEFORE_CHANGE: '+this.state.text)
+            this.setState({
+            text: result.text, 
+            })
+            console.log('AFTER_RETURNING: '+ this.state.text)
+        
+        }).catch((err) => {
+            console.error(err)
         })
-        console.log('AFTER_RETURNING: '+ this.state.text)
-       
-      }).catch((err) => {
-        console.error(err)
-      })
-  
+        } else {
+        window.Armored.decryptDirectMessage({ recipient: this.state.user, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, sessionStorage.getItem(`passphrase`))
+          .then((result) => {
+            console.log('BEFORE_CHANGE: '+this.state.text)
+            this.setState({
+              text: result.text, 
+            })
+            console.log('AFTER_RETURNING: '+ this.state.text)
+           
+          }).catch((err) => {
+            console.error(err)
+          })
+
+    }
    
-    return (<Comment.Text>{this.state.text}</Comment.Text>)
+    return (
+        <div>
+            <Comment.Text>{this.state.text}</Comment.Text>
+            <Comment.Text>recipient:{recipientUser}</Comment.Text>
+            <Comment.Text>user:{user}</Comment.Text>
+            <Comment.Text>receiver:{receivingUser}</Comment.Text>
+            </div>
+        )
   
     }};
 
@@ -90,7 +120,7 @@ class DirectMessageContainer extends React.Component {
         });
 
     render() {
-        const { data: { loading, directMessages } } = this.props;
+        const { data: { loading, directMessages }, currentUser, receivingUser } = this.props;
 
         return loading ? null : (
             <Messages>
@@ -102,8 +132,7 @@ class DirectMessageContainer extends React.Component {
                                 <Comment.Metadata>
                                     <div>{moment(m.created_at).format('LLL')}</div>
                                 </Comment.Metadata>
-                                <Message recipientUser={m.receiver.username} text={m.text} sessionkey={m.session_key} signature={m.signature} user={m.sender.username} message={m}/>
-
+                                <Message recipientUser={m.receiver.username} currentUser={currentUser} receivingUser={receivingUser} text={m.text} sessionkey={m.session_key} signature={m.signature} user={m.sender.username} message={m}/>
                             </Comment.Content>
                         </Comment>
                     ))}

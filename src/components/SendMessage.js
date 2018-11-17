@@ -55,6 +55,17 @@ const SendMessage = ({
               }).catch((err) => {
                   console.error(err)
               });
+                window.Armored.encryptDirectMessage({sender: username, recipient: username, text: values.message }, sessionStorage.getItem('passphrase'))
+                .then((result) => {
+                  console.log(result)  
+                  setFieldValue('message', result.text);
+                  setFieldValue('session_key', result.sessionkey);
+                  setFieldValue('signature', result.signature);
+                  handleSubmit(e);
+                  return result;
+              }).catch((err) => {
+                  console.error(err)
+              });
             } else {
             handleSubmit(e);
             return
