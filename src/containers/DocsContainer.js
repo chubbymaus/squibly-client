@@ -18,6 +18,12 @@ a {
 }
 `;
 
+const File = styled.div`
+h3{
+  padding-top: 10px;
+}
+`;
+
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
     newChannelMessage(channelId: $channelId) {
@@ -34,7 +40,7 @@ const newChannelMessageSubscription = gql`
   }
 `;
 
-const Message = ({ message: { url, text, filetype, filename } }) => {
+const Message = ({ message: { url, text, filetype, filename} }) => {
   if (url) {
     if (filetype.startsWith('image/')) {
       return (
@@ -43,22 +49,26 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
             <a href={url} download={filename}>Click to download</a>
         </div>
       );
-    } else if (filetype === 'text/plain') {
-      return <RenderText url={url} />;
+    } else if (filetype === null) {
+      return filetype;
     } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       return (
+
         <div>
           
             <a href={url} download={filename} type={filetype}><Icon color='green' size='huge' name="file alternate outline" /><br/>{filename}</a>
         </div>
+
       );
     }
      else  {
       return (
+
         <Grid.Column>
             
             <a href={url} download={filename} type={filetype}><Icon color='blue' size='huge' name="file alternate outline" /><br/>{filename}</a>
         </Grid.Column>
+
       );
     }
   }
@@ -173,6 +183,7 @@ class DocsContainer extends React.Component {
           this.scroller = scroller;
         }}
       >
+
         <FileUpload
           style={{
             display: 'flex',
@@ -186,12 +197,14 @@ class DocsContainer extends React.Component {
               .slice()
               .reverse()
               .map(m => (
+
                 <Grid.Column key={`${m.id}-message`}>
                   
                     
                     <Message message={m} />
                   
                 </Grid.Column>
+
               ))}
           </Grid>
         </FileUpload>

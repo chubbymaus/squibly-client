@@ -12,7 +12,7 @@ const HeaderWrapper = styled.div`
 
 export default ({ channelName }) => (
     <HeaderWrapper>
-        <Header>Uploaded Documents</Header>
+        <Header>Uploaded Documents | Drag and drop new items</Header>
         <hr />
     </HeaderWrapper>
 );

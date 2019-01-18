@@ -63,9 +63,11 @@ const DirectMessageModal = ({
                             </Downshift>
                         )}
                     </Form.Field>
+
                     <Button fluid onClick={onClose} style={{ backgroundColor: '#f45c57', color: '#fff' }}>
                         Cancel
                 </Button>
+
                 </Form>
             </Modal.Content>
         </Modal>

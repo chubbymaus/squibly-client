@@ -51,14 +51,18 @@ render(){
       return (
         <div>
             <h3> 
+
             <a href={url} download={filename} type={filetype}><Icon color='green' name="file alternate outline" />{filename}</a></h3>
+
         </div>
       );
     } else  {
       return (
         <div>
             <h3> 
+
             <a href={url} download={filename} type={filetype}><Icon color='blue' name="file alternate outline" />{filename}</a></h3>
+
         </div>
       );
     }

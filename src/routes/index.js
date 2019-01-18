@@ -9,7 +9,9 @@ import CreateTeam from './CreateTeam';
 import ViewTeam from './ViewTeam';
 import DirectMessages from './DirectMessages';
 import ViewDocs from './ViewDocs';
+
 import Passphrase from './Passphrase';
+
 
 
 const isAuthenticated = () => {
@@ -56,6 +58,7 @@ const Routes = () => (
       <PrivateRoute path="/view-team/user/:teamId/:userId" exact component={DirectMessages} />
       <PrivateRoute path="/view-team/:teamId?/:channelId?" exact component={ViewTeam} />
       <PrivateRoute path="/view-docs/:teamId?/:channelId?" exact component={ViewDocs} />
+      <PrivateRoute path="/admin-console" exact component={AdminConsole} />
       <PrivateRoute path="/create-team" exact component={CreateTeam} />
     </Switch>
   </BrowserRouter>
