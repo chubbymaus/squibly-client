@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Comment, Icon, Button } from 'semantic-ui-react';
-import moment from 'moment';
+import { Comment, Icon, Grid } from 'semantic-ui-react';
+
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
 import styled from 'styled-components';
@@ -53,25 +53,22 @@ const Message = ({ message: { url, text, filetype, filename} }) => {
       return filetype;
     } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       return (
-        <File>
-            <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='green' name="file excel outline" />{filename}</a></h3>
-        </File>
-      );
-    } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml.presentation')) {
-      return (
-        <File>
-            <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='red' name="file powerpoint outline" />{filename}</a></h3>
-        </File>
+
+        <div>
+          
+            <a href={url} download={filename} type={filetype}><Icon color='green' size='huge' name="file alternate outline" /><br/>{filename}</a>
+        </div>
+
       );
     }
      else  {
       return (
-        <File>
-            <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file word outline" />{filename}</a></h3>
-        </File>
+
+        <Grid.Column>
+            
+            <a href={url} download={filename} type={filetype}><Icon color='blue' size='huge' name="file alternate outline" /><br/>{filename}</a>
+        </Grid.Column>
+
       );
     }
   }
@@ -195,18 +192,21 @@ class DocsContainer extends React.Component {
           channelId={channelId}
           disableClick
         >
-          <Comment.Group>
+          <Grid columns="4" relaxed>
             {messages
               .slice()
               .reverse()
               .map(m => (
-                <div key={`${m.id}-message`}>
+
+                <Grid.Column key={`${m.id}-message`}>
                   
+                    
                     <Message message={m} />
                   
-                </div>
+                </Grid.Column>
+
               ))}
-          </Comment.Group>
+          </Grid>
         </FileUpload>
       </FileContainer>
     );

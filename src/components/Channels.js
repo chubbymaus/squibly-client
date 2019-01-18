@@ -43,36 +43,49 @@ i:hover{
 }
 `;
 
+
+
 const PushLeft = styled.div`${paddingLeft};`;
 
 const Green = styled.span`color: #31C56E;`;
 
 const AddUserIcon = styled.span`
     color: #31C56E;
+
 `;
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
-const channel = ({ id, name }, teamId) => (
-    <Link key={`channel-${id}`} to={`/view-team/${teamId}/${id}`}>
+const channel = ({ id, name }, teamId) => {
+    const setPassphrase = (e) => {
+        if (sessionStorage.getItem(`${name}-passphrase`)===null && name !== 'general'){
+            sessionStorage.setItem( `${name}-passphrase`, prompt("channel passphrase"));
+        }
+        return
+    }
+    return(
+    <Link key={`channel-${id}`} onClick={setPassphrase} to={`/view-team/${teamId}/${id}`}>
         <SideBarListItem>
             # {name}
         </SideBarListItem>
     </Link>
-);
+)};
 
-const dmChannel = ({ id, name }, teamId) => (
-    <Link key={`user-${id}`} to={`/view-team/${teamId}/${id}`}>
-        <SideBarListItem >
-            <Bubble /> {name}
+const user = ({ id, username }, teamId,) => {
+
+    return(
+    <Link key={`user-${id}`} to={`/view-team/user/${teamId}/${id}`} >
+        <SideBarListItem>
+            <Bubble /> {username}
         </SideBarListItem>
     </Link>
-);
+    )
+};
 
 export default ({
     teamName,
     username,
     channels,
-    dmChannels,
+    users,
     onAddChannelClick,
     teamId,
     onInvitePeopleClick,
@@ -106,24 +119,16 @@ export default ({
                     <SideBarListHeader>
                         Direct Messages <Icon onClick={onDirectMessageClick} name="add circle" />
                     </SideBarListHeader>
-                    {dmChannels.map(dmC => dmChannel(dmC, teamId))}
-                </SideBarList>
+                    {users.map(u => user(u, teamId))}
+                    </SideBarList>
             </div>
             <div>
                 <SideBarList>
                     <SideBarListHeader>
                         <Link to="/view-docs">
-                         <h4><Icon name="file alternate outline" />Team Documents</h4>
-                        </Link>
-                        
-                    </SideBarListHeader>
-                </SideBarList>
-            </div>
-            <div>
-                <SideBarList>
-                    <SideBarListHeader>
-                        <Link to="/admin-console">
-                         <h4><Icon name="shield alternate" />Squibly Explorer</h4>
+
+                         <h4><Icon name="file alternate outline" /> Documents</h4>
+
                         </Link>
                         
                     </SideBarListHeader>

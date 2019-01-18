@@ -6,6 +6,7 @@ import moment from 'moment';
 import FileUpload from '../components/FileUpload';
 import RenderText from '../components/RenderText';
 
+
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
     newChannelMessage(channelId: $channelId) {
@@ -18,15 +19,28 @@ const newChannelMessageSubscription = gql`
       filename
       filetype
       created_at
+      session_key
+      signature
     }
   }
 `;
 
-const Message = ({ message: { url, text, filetype, filename } }) => {
+class Message extends React.Component {
+  state = {
+    channelName: this.props.channelName,
+    sessionkey: this.props.sessionkey,
+    signature: this.props.signature,
+    user: this.props.user,
+    text: this.props.text,
+    isDm: this.props.isDm
+  }
+
+render(){
+  const { message: { url, filetype,  filename }} = this.props;
   if (url) {
     if (filetype.startsWith('image/')) {
       return (
-        <div>
+        <div className="hiddenMessage">
             <img src={url} alt="" />
             <a href={url} download={filename}>Click to download</a>
         </div>
@@ -37,32 +51,44 @@ const Message = ({ message: { url, text, filetype, filename } }) => {
       return (
         <div>
             <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='green' name="file excel outline" />{filename}</a></h3>
+
+            <a href={url} download={filename} type={filetype}><Icon color='green' name="file alternate outline" />{filename}</a></h3>
+
         </div>
       );
-    } else if (filetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml.presentation')) {
+    } else  {
       return (
         <div>
             <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='red' name="file powerpoint outline" />{filename}</a></h3>
-        </div>
-      );
-    }
-     else  {
-      return (
-        <div>
-            <h3> 
-            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file word outline" />{filename}</a></h3>
+
+            <a href={url} download={filename} type={filetype}><Icon color='blue' name="file alternate outline" />{filename}</a></h3>
+
         </div>
       );
     }
   }
-  return <Comment.Text>{text}</Comment.Text>;
+   if (this.state.sessionkey !== null && this.state.channelName !== 'general' && this.state.isDm === false){
+    window.Armored.decryptChannelMessage({ recipient: this.state.channelName, sender: this.state.user, text: this.state.text, sessionkey: this.state.sessionkey, signature: this.state.signature }, sessionStorage.getItem(`${this.state.channelName}-passphrase`))
+    .then((result) => {
+      console.log('BEFORE_CHANGE: '+this.state.text)
+      this.setState({
+        text: result.text, 
+      })
+      console.log('AFTER_RETURNING: '+ this.state.text)
+     
+    }).catch((err) => {
+      console.error(err)
+    })
+
+  }
+  return (<Comment.Text>{this.state.text}</Comment.Text>)
+}
 };
 
 class MessageContainer extends React.Component {
   state = {
     hasMoreItems: true,
+    
   };
 
   componentWillMount() {
@@ -151,8 +177,11 @@ class MessageContainer extends React.Component {
   };
 
   render() {
-    const { data: { loading, messages }, channelId } = this.props;
+    // eslint-disable-next-line 
+    const { data: { loading, messages }, channelId, channelName, username, isDm, session_key, signature } = this.props;
+
     return loading ? null : (
+          
       <div
         style={{
           gridColumn: 3,
@@ -184,11 +213,13 @@ class MessageContainer extends React.Component {
                 <Comment key={`${m.id}-message`}>
                   <Comment.Content>
                     <Comment.Author as="a">{m.user.username}</Comment.Author>
+
+
                     <Comment.Metadata>
                       <div>{moment(m.created_at).format('LLL')}</div>
                     </Comment.Metadata>
                     <br />
-                    <Message message={m} />
+                    <Message channelName={channelName} text={m.text} isDm={isDm} sessionkey={m.session_key} signature={m.signature} user={m.user.username} message={m}/>
                   </Comment.Content>
                 </Comment>
               ))}
@@ -206,11 +237,14 @@ const messagesQuery = gql`
       text
       user {
         username
+      
       }
+
       url
       filename
       filetype
-      
+      session_key
+      signature
       created_at
     }
   }

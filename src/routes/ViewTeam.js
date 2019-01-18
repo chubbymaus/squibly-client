@@ -11,14 +11,21 @@ import Sidebar from '../containers/Sidebar';
 import MessageContainer from '../containers/MessageContainer';
 import { meQuery } from '../graphql/team';
 import NavBar from '../components/NavBar';
+// import axios from 'axios'
 
 
 const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
   if (loading || !me) {
     return null;
   }
-
-  const { id: currentUserId, username, teams } = me;
+  
+  const { id: currentUserId, username, teams,  } = me;
+  // const userId = me.id;
+  //   axios.get(
+  //     `http://localhost:8080/graphql?query={getUserPrivateKeys(userId:${userId}){id,private_key,sig_private_key}}`
+  //   ).then((result) => {
+  //     console.log(result.data)
+  //   })
 
   if (!teams.length) {
     return <Redirect to="/create-team" />;
@@ -46,13 +53,16 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
           currentUserId={currentUserId}
         />
         {channel && <Header channelName={channel.name} />}
-        {channel && <MessageContainer channelId={channel.id} />}
+        {channel && <MessageContainer channelId={channel.id} channelName={channel.name} isDm={channel.dm} />}
         {channel && (
           <SendMessage
             channelId={channel.id}
+            username={username}
+            isDm={channel.dm}
+            channelName={channel.name}
             placeholder={channel.name}
-            onSubmit={async (text) => {
-              await mutate({ variables: { text, channelId: channel.id } });
+            onSubmit={async (text, session_key, signature) => {
+              await mutate({ variables: { text, session_key, signature, channelId: channel.id } });
             }}
           />
         )}
@@ -63,8 +73,8 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
 };
 
 const createMessageMutation = gql`
-  mutation($channelId: Int!, $text: String!) {
-    createMessage(channelId: $channelId, text: $text)
+  mutation($channelId: Int!, $text: String!, $session_key: String, $signature:String) {
+    createMessage(channelId: $channelId, text: $text, session_key: $session_key, signature: $signature)
   }
 `;
 
