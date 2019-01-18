@@ -58,7 +58,6 @@ const Routes = () => (
       <PrivateRoute path="/view-team/user/:teamId/:userId" exact component={DirectMessages} />
       <PrivateRoute path="/view-team/:teamId?/:channelId?" exact component={ViewTeam} />
       <PrivateRoute path="/view-docs/:teamId?/:channelId?" exact component={ViewDocs} />
-      <PrivateRoute path="/admin-console" exact component={AdminConsole} />
       <PrivateRoute path="/create-team" exact component={CreateTeam} />
     </Switch>
   </BrowserRouter>
