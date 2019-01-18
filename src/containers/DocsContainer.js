@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { Comment, Icon, Grid } from 'semantic-ui-react';
 
 import FileUpload from '../components/FileUpload';
-import RenderText from '../components/RenderText';
+// import RenderText from '../components/RenderText';
 import styled from 'styled-components';
 
 const FileContainer =  styled.div`
@@ -18,11 +18,11 @@ a {
 }
 `;
 
-const File = styled.div`
-h3{
-  padding-top: 10px;
-}
-`;
+// const File = styled.div`
+// h3{
+//   padding-top: 10px;
+// }
+// `;
 
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
