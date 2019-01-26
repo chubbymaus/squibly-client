@@ -149,7 +149,7 @@ class MessageContainer extends React.Component {
     const { data: { messages, fetchMore }, channelId } = this.props;
     if (
       this.scroller &&
-      this.scroller.scrollTop < 100 &&
+      this.scroller.scrollTop < 20 &&
       this.state.hasMoreItems &&
       messages.length >= 35
     ) {
