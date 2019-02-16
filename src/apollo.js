@@ -6,7 +6,7 @@ import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 import createFileLink from './createFileLink';
 
-const httpLink = createFileLink({ uri: 'http://localhost:8080/graphql' });
+const httpLink = createFileLink({ uri: `http://${process.env.REACT_APP_SERVER_URL}/graphql` });
 
 const middlewareLink = setContext(() => ({
   headers: {
@@ -40,7 +40,7 @@ const httpLinkWithMiddleware = afterwareLink.concat(
 );
 
 export const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:8080/subscriptions',
+  uri: `ws://${process.env.REACT_APP_SERVER_URL}/subscriptions`,
   options: {
     reconnect: true,
     lazy: true,

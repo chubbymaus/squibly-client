@@ -32,21 +32,47 @@ const NavItem = styled.div`
   }
 `
 
+const logOut = () => {
+  localStorage.clear();
+  sessionStorage.clear();
+  
+};
+
+const Login = () => {
+  if (localStorage.getItem(`token`)===null || localStorage.getItem(`refreshToken`)===null) {
+    return (
+      <NavMenu>
+        <Link to="/register">
+          <NavItem>Register</NavItem>
+        </Link>
+        <Link to="/login">
+          <NavItem>Log In</NavItem>
+        </Link>
+      </NavMenu>
+    )
+
+  } else {
+    return (
+      <NavMenu>
+        <Link to="/view-team">
+          <NavItem>View Team</NavItem>
+        </Link>
+    
+        <Link to="/create-team">
+          <NavItem>Create Team</NavItem>
+        </Link>
+        <Link to="/login">
+        <NavItem onClick={logOut}>Log Out</NavItem>
+        </Link>
+      </NavMenu>
+    );
+  }  
+}
+
 const NavBar = () => (
   <Nav>
     <NavLogo src={logo} alt="squibly logo" />
-    <NavMenu>
-      <Link to="/view-team">
-        <NavItem>View Team</NavItem>
-      </Link>
-  
-      <Link to="/create-team">
-        <NavItem>Create Team</NavItem>
-      </Link>
-      <Link to="/register">
-        <NavItem>Register</NavItem>
-      </Link>
-    </NavMenu>
+    <Login/>
   </Nav>
 );
 

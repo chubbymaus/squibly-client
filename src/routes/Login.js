@@ -5,7 +5,6 @@ import { Form, Message, Container, Header, Input, Button } from "semantic-ui-rea
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 import { wsLink } from '../apollo';
-
 import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 
@@ -25,8 +24,6 @@ const Card = styled.div`
     margin: 1rem .5rem;
     
 `;
-
-
 
 class Login extends Component {
   constructor(props) {
@@ -50,12 +47,12 @@ class Login extends Component {
     const { ok, token, refreshToken, errors } = response.data.login;
 
     if (ok) {
-      sessionStorage.setItem( "passphrase", prompt("passphrase"));
+   
       // global.passphrase = prompt('passphrase')
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
       wsLink.subscriptionClient.tryReconnect();
-      this.props.history.push("/view-team");
+      this.props.history.push("/passphrase");
     } else {
       const err = {};
       errors.forEach(({ path, message }) => {

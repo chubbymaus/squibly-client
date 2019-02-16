@@ -1,11 +1,8 @@
-import React from "react";
+import React, { Component } from "react";
 import { Form, Container, Header, Input, Button } from "semantic-ui-react";
-import { graphql, compose } from "react-apollo";
-
-import { withFormik } from 'formik';
 import styled from 'styled-components';
 import NavBar from '../components/NavBar';
-import { passphraseQuery } from '../graphql/team';
+
 const CenterForm = styled.div`
   display: flex;
   justify-content: space-between;
@@ -24,75 +21,54 @@ const Card = styled.div`
 `;
 
 
-const Passphrase = ({
-    data: { loading, me },
-    values,
-    handleChange,
-    handleBlur,
+class Passphrase extends Component {
+  state = {
+    passphrase: "",
+  };
 
-}) => {
-    if (loading || !me) {
-      return null;
-    }
-  
-    const { passphrase, publicKey, privateKey, sigPublicKey, sigPrivateKey } = me;
-    const getUserKeys = (e) => {
-        if (values.passphrase === passphrase){
-          
-            localStorage.setItem("publicKey", publicKey)
-            localStorage.setItem("privateKey", privateKey)
-            localStorage.setItem("sigPublicKey", sigPublicKey)
-            localStorage.setItem("sigPrivateKey", sigPrivateKey)
-            window.location = '/view-team';
-        } else {
-            alert('not today satan')
-        }  
-    }
+  onSubmit = async () => {
+    sessionStorage.setItem( "passphrase", this.state.passphrase);
+    // global.passphrase = prompt('passphrase')
+    this.props.history.push("/view-team");
+  };
+
+  onChange = (e) => {
+    const { name, value } = e.target;
+    // name = "email";
+    this.setState({ [name]: value });
+  };
+
+  render() {
+    const {
+      passphrase,
+    } = this.state;
+   
     return (
       <div>
         <NavBar />
         <CenterForm>
           <Container text>
             <Card>
-              <Header as="h2">Enter your Passphrase</Header>
+              <Header as="h2">Please Enter Your Unique Passphrase</Header>
               <Form>
-
-               
                 <Form.Field>
                   <Input
-                    value={values.passphrase}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
                     name="passphrase"
+                    onChange={this.onChange}
+                    value={passphrase}
+                    type='password'
+                    placeholder="Passphrase"
                     fluid
-                    placeholder='passphrase...'
                   />
                 </Form.Field>
-
-                <Button onClick={getUserKeys} fluid style={{ backgroundColor: "#31c56e", color: "#fff" }}>Submit</Button>
+                <Button onClick={this.onSubmit} fluid style={{ backgroundColor: "#31c56e", color: "#fff" }}>Submit</Button>
               </Form>
-              
             </Card>
           </Container>
         </CenterForm>
       </div>
     );
   }
+}
 
-
-
-
-export default compose(
-    graphql(passphraseQuery, { options: { fetchPolicy: 'network-only' }}),
-    withFormik({
-        mapPropsToValues: () => ({ passphrase: '' }),
-        handleSubmit: async (values, { props: { onSubmit }, setSubmitting, resetForm }) => {
-            if (!values.passphrase) {
-                setSubmitting(false);
-                return;
-            }
-
-         
-            resetForm(false);
-        },
-    }))(Passphrase);
+export default Passphrase;

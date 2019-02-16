@@ -126,11 +126,8 @@ export default ({
                 <SideBarList>
                     <SideBarListHeader>
                         <Link to="/view-docs">
-
                          <h4><Icon name="file alternate outline" /> Documents</h4>
-
                         </Link>
-                        
                     </SideBarListHeader>
                 </SideBarList>
             </div>
